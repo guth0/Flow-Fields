@@ -121,7 +121,7 @@ private:
         }
     }
 
-    void applyGrid(float dt)
+    void apply2Grid(float dt)
     {
         uint16_t i = 0;
         for (Particle &particle : m_particles)
@@ -131,7 +131,7 @@ private:
             {
 
                 // get position of cell that particle is in
-                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size) * m_grid.width + 2;
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
                 float x = cos(m_grid.data[cell_position]);
                 float y = sin(m_grid.data[cell_position]);
@@ -145,8 +145,61 @@ private:
             else
             {
                 m_particles.erase(m_particles.begin() + i);
+
+                sf::Vector2f pos = sf::Vector2f((rand() % m_world_size.x) * .1f, rand() % m_world_size.y);
+
+                addParticle(pos);
             }
             i++;
+        }
+    }
+    void applyGrid(float dt)
+    {
+        // uint16_t i = 0;
+        for (Particle &particle : m_particles)
+        {
+            if (particle.position.x < 0)
+            {
+                particle.position.x = m_world_size.x - standard_radius;
+                particle.color = sf::Color::Blue;
+
+                particle.clearHistory();
+            }
+            else if (particle.position.x > m_world_size.x)
+            {
+                particle.position.x = m_world_size.x / 2.0f;
+                particle.color = sf::Color::Blue;
+
+                particle.clearHistory();
+            }
+            else if (particle.position.y < 0)
+            {
+                particle.position.y = m_world_size.y - standard_radius;
+                particle.color = sf::Color::Blue;
+
+                particle.clearHistory();
+            }
+            else if (particle.position.y > m_world_size.y)
+            {
+                particle.position.y = m_world_size.y / 2.0f;
+                particle.color = sf::Color::Blue;
+                particle.clearHistory();
+            }
+            else
+            {
+
+                // get position of cell that particle is in
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
+
+                float x = cos(m_grid.data[cell_position]);
+                float y = sin(m_grid.data[cell_position]);
+
+                sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
+                // apply that cell's vector to the particle
+                particle.setVelocity(vec, dt);
+
+                // I don't know if it should be .addVelocity() or .setVelocity()
+            }
         }
     }
 

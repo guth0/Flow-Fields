@@ -5,10 +5,11 @@
 #include <cstdlib>
 #include "system.h"
 #include "renderer.h"
+#include "spawner.h"
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
-const sf::Color background_color = {20, 0, 0};
+const sf::Color background_color = sf::Color{0, 20, 20};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
 static sf::Color getRainbow(float t)
@@ -19,36 +20,6 @@ static sf::Color getRainbow(float t)
     return {static_cast<uint8_t>(255.0f * r * r),
             static_cast<uint8_t>(255.0f * g * g),
             static_cast<uint8_t>(255.0f * b * b)};
-}
-
-void spawnParticles(ParticleSystem &system)
-{
-    float transparency = 0.20f;
-    uint16_t particle_c = 30;
-    uint16_t particle_r = 40;
-    float x_spawn_distance = ((window_width) / particle_c);
-    float y_spawn_distance = ((window_height) / particle_r);
-    uint8_t seed = 12;
-    srand(seed);
-
-    // Spawn Particles
-    for (int x = 0; x < particle_c; x++)
-    {
-        for (int y = 0; y < particle_r; y++)
-        {
-
-            float xRand = rand() % window_width;
-            float yRand = rand() % window_height;
-
-            sf::Vector2f pos = {xRand + 2, yRand + 2};
-
-            Particle &particle = system.addParticle(pos);
-
-            particle.color = sf::Color{255, 0, 0, static_cast<uint8_t>(transparency * 255)};
-        }
-    }
-
-    // Spawn Particles
 }
 
 int main()
@@ -66,7 +37,7 @@ int main()
     float flow_zoom = 0.5f;
     float flow_curve = .5f;
     uint8_t cell_size = 15;
-    uint16_t standard_radius = 2;
+    uint16_t standard_radius = 1;
     uint8_t substep_count = 1;
     // // Set simulation attributes
 
@@ -83,7 +54,11 @@ int main()
     system.generateField(flow_zoom, flow_curve);
     // Setup system parameters
 
-    spawnParticles(system);
+    // Spawner
+    Spawner spawner(system, window_resolution);
+
+    spawner.spawnParticles();
+    // Spawner
 
     Renderer renderer{window};
 
@@ -101,7 +76,7 @@ int main()
                 break;
             }
         }
-        // window.clear(background_color);
+        window.clear(background_color);
         system.update();
         renderer.render(system);
         window.display();
