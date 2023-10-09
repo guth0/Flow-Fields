@@ -23,13 +23,15 @@ public:
             circle.setScale(system.standard_radius, system.standard_radius);
             circle.setFillColor(particle.color);
             m_target.draw(circle);
-            for (int i = 0; i < particle.history.size(); ++i)
-            {
-                sf::Vertex line[] = {
-                    sf::Vertex(particle.history[i]),
-                    sf::Vertex(particle.history[i + 1])};
-                m_target.draw(line, 2, sf::Lines);
-            }
+            // for (int i = 0; i < particle.history.size() - 1; ++i)
+            // {
+            //     // std::cout << particle.history
+            //     sf::Vertex line[] = {
+            //         sf::Vertex(particle.history[i]),
+            //         sf::Vertex(particle.history[i + 1])};
+            //     line.color = particle.color;
+            //     m_target.draw(line, 2, sf::Lines);
+            // }
         }
     }
 

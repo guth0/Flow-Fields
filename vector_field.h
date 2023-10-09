@@ -28,14 +28,14 @@ public:
         width = floor(window_resolution.x / cell_size_);
         height = floor(window_resolution.y / cell_size_);
 
-        data.resize(width * height);
+        data.resize((width + 2) * (height + 2));
     }
 
     void createField(float zoom, float curve)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width + 2; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height + 2; y++)
             {
                 float angle = (pow(cos(x * zoom), 2) + sin(y * zoom)) * curve;
                 data[(x * height) + y] = angle;

@@ -8,7 +8,7 @@
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
-const sf::Color background_color = {0, 0, 0};
+const sf::Color background_color = {20, 0, 0};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
 static sf::Color getRainbow(float t)
@@ -23,6 +23,7 @@ static sf::Color getRainbow(float t)
 
 void spawnParticles(ParticleSystem &system)
 {
+    float transparency = 0.20f;
     uint16_t particle_c = 30;
     uint16_t particle_r = 40;
     float x_spawn_distance = ((window_width) / particle_c);
@@ -43,7 +44,7 @@ void spawnParticles(ParticleSystem &system)
 
             Particle &particle = system.addParticle(pos);
 
-            particle.color = sf::Color::Red;
+            particle.color = sf::Color{255, 0, 0, static_cast<uint8_t>(transparency * 255)};
         }
     }
 
@@ -100,7 +101,7 @@ int main()
                 break;
             }
         }
-        window.clear(background_color);
+        // window.clear(background_color);
         system.update();
         renderer.render(system);
         window.display();

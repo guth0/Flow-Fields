@@ -32,6 +32,7 @@ public:
             updateParticles(step_dt);
         }
     }
+
     void setStandardRadius(uint8_t radius)
     {
         standard_radius = radius;
@@ -122,7 +123,7 @@ private:
 
     void applyGrid(float dt)
     {
-
+        uint16_t i = 0;
         for (Particle &particle : m_particles)
         {
             if (particle.position.x > standard_radius && particle.position.x < m_world_size.x - standard_radius &&
@@ -130,7 +131,7 @@ private:
             {
 
                 // get position of cell that particle is in
-                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size) * m_grid.width;
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size) * m_grid.width + 2;
 
                 float x = cos(m_grid.data[cell_position]);
                 float y = sin(m_grid.data[cell_position]);
@@ -141,6 +142,11 @@ private:
 
                 // I don't know if it should be .addVelocity() or .setVelocity()
             }
+            else
+            {
+                m_particles.erase(m_particles.begin() + i);
+            }
+            i++;
         }
     }
 
