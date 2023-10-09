@@ -11,7 +11,7 @@ public:
 
     ParticleSystem()
     {
-    } // Auto create default constructor
+    }
 
     Particle &addParticle(sf::Vector2f position)
     {
@@ -133,9 +133,9 @@ private:
                 float x = cos(m_grid.data[cell_position]);
                 float y = sin(m_grid.data[cell_position]);
 
-                sf::Vector2f vec = sf::Vector2f(x, y);
+                sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
                 // apply that cell's vector to the particle
-                particle.addVelocity(vec, dt);
+                particle.setVelocity(vec, dt);
 
                 // I don't know if it should be .addVelocity() or .setVelocity()
             }

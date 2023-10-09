@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <cstdlib>
 #include "system.h"
 #include "renderer.h"
 
@@ -20,6 +21,35 @@ static sf::Color getRainbow(float t)
             static_cast<uint8_t>(255.0f * b * b)};
 }
 
+void spawnParticles(ParticleSystem &system)
+{
+    uint16_t particle_c = 30;
+    uint16_t particle_r = 40;
+    float x_spawn_distance = ((window_width) / particle_c);
+    float y_spawn_distance = ((window_height) / particle_r);
+    uint8_t seed = 12;
+    srand(seed);
+
+    // Spawn Particles
+    for (int x = 0; x < particle_c; x++)
+    {
+        for (int y = 0; y < particle_r; y++)
+        {
+
+            float xRand = pow(fabs(sin(rand())), 1.75f);
+            float yRand = pow(fabs(sin(rand())), 1.75f);
+
+            sf::Vector2f pos = {xRand * window_width + 2, yRand * window_width};
+
+            Particle &particle = system.addParticle(pos);
+
+            particle.color = sf::Color::Red;
+        }
+    }
+
+    // Spawn Particles
+}
+
 int main()
 {
 
@@ -32,11 +62,11 @@ int main()
     // Set up window
 
     // Set simulation attributes
-    float flow_zoom = 0.2f;
-    float flow_curve = 0.5;
-    uint8_t cell_size = 20;
+    float flow_zoom = 0.5f;
+    float flow_curve = .5f;
+    uint8_t cell_size = 15;
     uint16_t standard_radius = 1;
-    uint8_t substep_count = 3;
+    uint8_t substep_count = 1;
     // // Set simulation attributes
 
     // Setup system parameters
@@ -52,24 +82,7 @@ int main()
     system.generateField(flow_zoom, flow_curve);
     // Setup system parameters
 
-    uint16_t particle_c = 25;
-    uint16_t particle_r = 25;
-    uint16_t spawn_border = 5;
-    float x_spawn_distance = ((window_width - spawn_border) / particle_c);
-    float y_spawn_distance = ((window_height - spawn_border) / particle_r);
-
-    // Spawn Particles
-    for (int x = 1; x <= particle_c; x++)
-    {
-        for (int y = 1; y <= particle_r; y++)
-        {
-            sf::Vector2f pos = {x_spawn_distance * x + spawn_border, y_spawn_distance * y + spawn_border};
-
-            system.addParticle(pos);
-        }
-    }
-
-    // Spawn Particles
+    spawnParticles(system);
 
     Renderer renderer{window};
 

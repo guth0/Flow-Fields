@@ -10,7 +10,7 @@ public:
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
 
-    sf::Color color = sf::Color::White;
+    sf::Color color = sf::Color::Red;
 
     // Particle() = default;
 
