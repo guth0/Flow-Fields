@@ -36,10 +36,10 @@ void spawnParticles(ParticleSystem &system)
         for (int y = 0; y < particle_r; y++)
         {
 
-            float xRand = pow(fabs(sin(rand())), 1.75f);
-            float yRand = pow(fabs(sin(rand())), 1.75f);
+            float xRand = rand() % window_width;
+            float yRand = rand() % window_height;
 
-            sf::Vector2f pos = {xRand * window_width + 2, yRand * window_width};
+            sf::Vector2f pos = {xRand + 2, yRand + 2};
 
             Particle &particle = system.addParticle(pos);
 
@@ -56,7 +56,7 @@ int main()
     // Set up window
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve");
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
     constexpr uint32_t frame_rate = 60;
     window.setFramerateLimit(frame_rate);
     // Set up window
