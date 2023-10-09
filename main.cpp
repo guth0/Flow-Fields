@@ -1,6 +1,10 @@
 // use "./build/main" in terminal to run
 
-// particles travel abt 2px a frame
+// particles travel abt 1px a frame
+// only respawn particles once they are
+//      uint16_t respawn_buffer = max_history_length * history_frames_between * 1px/frame
+// respawn_buffer pixels from the border of the screen
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <cmath>
@@ -65,6 +69,8 @@ int main()
     Renderer renderer{window};
 
     sf::Clock clock;
+    sf::Time elapsed;
+    float fps;
 
     while (window.isOpen())
     {
@@ -78,6 +84,12 @@ int main()
                 break;
             }
         }
+
+        elapsed = clock.restart();
+
+        fps = 1.0f / elapsed.asSeconds();
+
+        std::cout << fps << std::endl;
 
         window.clear(background_color);
         system.update();

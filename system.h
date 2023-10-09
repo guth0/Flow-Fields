@@ -101,6 +101,8 @@ private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
+    float speed_coefficent = 2;
+
     float m_time = 0.0f;
     float m_frame_dt = 0.0f;
 
@@ -124,22 +126,18 @@ private:
             if (particle.position.x < 0)
             {
                 particle.setPosition(m_world_size.x - standard_radius, particle.position.y);
-                particle.color = sf::Color::Blue;
             }
             else if (particle.position.x > m_world_size.x)
             {
                 particle.setPosition(0, particle.position.y);
-                particle.color = sf::Color::Blue;
             }
             else if (particle.position.y < 0)
             {
                 particle.setPosition(particle.position.x, m_world_size.y - standard_radius);
-                particle.color = sf::Color::Blue;
             }
             else if (particle.position.y > m_world_size.y)
             {
                 particle.setPosition(particle.position.x, 0);
-                particle.color = sf::Color::Blue;
             }
             else
             {
@@ -152,8 +150,7 @@ private:
 
                 sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
                 // apply that cell's vector to the particle
-                particle.addVelocity(vec, dt);
-                particle.slowdown(.40f);
+                particle.setVelocity(vec * speed_coefficent, dt);
 
                 // I don't know if it should be .addVelocity() or .setVelocity()
             }

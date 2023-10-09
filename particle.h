@@ -11,9 +11,9 @@ public:
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
 
-    static constexpr uint8_t history_frames_between = 5;
+    static constexpr uint8_t history_frames_between = 2;
     uint8_t frames_since_last_history = history_frames_between; // must to start above history_frames_between
-    static constexpr uint8_t max_history_length = 60;
+    static constexpr uint8_t max_history_length = 20;
     std::deque<sf::Vector2f> history;
 
     sf::Color color = sf::Color::Red;
@@ -23,7 +23,7 @@ public:
     Particle(sf::Vector2f position_) // constructor
         : position{position_}, position_last{position_}, acceleration{0.0f, 0.0f}
     {
-        history.push_back(position);
+        history.push_front(position);
     }
 
     void update(float dt)
@@ -43,12 +43,12 @@ public:
     {
         if (frames_since_last_history >= history_frames_between)
         {
-            history.push_back(position);
+            history.push_front(position);
 
             // Limit the history length to control the tail length
             while (history.size() > max_history_length)
             {
-                history.pop_front();
+                history.pop_back();
             }
             frames_since_last_history = 0;
         }
