@@ -37,8 +37,8 @@ public:
         {
             for (int y = 0; y < height + 2; y++)
             {
-                float angle = (pow(cos(x * zoom), 2) + sin(y * zoom)) * curve;
-                data[(x * height) + y] = angle;
+                float angle = (pow(cos(x * zoom), 3) + sqrt(abs(sin(y * zoom)))) * curve - 1;
+                data[(x * (height + 2)) + y] = angle;
             }
         }
     }

@@ -13,7 +13,7 @@ public:
 
     static constexpr uint8_t history_frames_between = 5;
     uint8_t frames_since_last_history = history_frames_between; // must to start above history_frames_between
-    static constexpr uint8_t max_history_length = 20;
+    static constexpr uint8_t max_history_length = 60;
     std::deque<sf::Vector2f> history;
 
     sf::Color color = sf::Color::Red;
@@ -81,6 +81,14 @@ public:
     void slowdown(float ratio)
     {
         position_last = position_last + ratio * (position - position_last);
+    }
+
+    void setPosition(float x, float y)
+    {
+        sf::Vector2f position_ = sf::Vector2f{x, y};
+        position = position_;
+        position_last = position_;
+        clearHistory();
     }
 
     [[nodiscard]] sf::Vector2f getVelocity(float dt) const

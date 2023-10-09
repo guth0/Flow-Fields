@@ -1,4 +1,6 @@
 // use "./build/main" in terminal to run
+
+// particles travel abt 2px a frame
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <cmath>
@@ -76,6 +78,7 @@ int main()
                 break;
             }
         }
+
         window.clear(background_color);
         system.update();
         renderer.render(system);
