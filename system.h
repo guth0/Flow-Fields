@@ -43,6 +43,7 @@ public:
     void resizeGrid(uint16_t cell_size)
     {
         m_grid.setSize(cell_size);
+        m_cell_size = cell_size;
     }
 
     void setCenter(sf::Vector2f window_resolution)
@@ -127,9 +128,12 @@ private:
             {
 
                 // get position of cell that particle is in
-                uint32_t cell_position = floor(particle.position.x / m_cell_size) * m_grid.height + floor(particle.position.y / m_cell_size);
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size) * m_grid.width;
 
-                sf::Vector2f vec = sf::Vector2f(cos(m_grid.data[cell_position]), sin(m_grid.data[cell_position]));
+                float x = cos(m_grid.data[cell_position]);
+                float y = sin(m_grid.data[cell_position]);
+
+                sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
                 particle.addVelocity(vec, dt);
 

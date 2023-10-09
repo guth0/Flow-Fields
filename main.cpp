@@ -10,9 +10,6 @@ constexpr uint16_t window_width = window_height * 1512 / 982;
 const sf::Color background_color = {0, 0, 0};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
-// constexpr uint8_t RADIUS = 3;
-// const std::pair<uint8_t, uint8_t> gridSize = std::make_pair(ceil(window_width / (RADIUS * 2)), ceil(window_height / (RADIUS * 2)));
-
 static sf::Color getRainbow(float t)
 {
     const float r = sin(t);
@@ -35,13 +32,12 @@ int main()
     // Set up window
 
     // Set simulation attributes
-    float flow_zoom;
-    float flow_curve;
+    float flow_zoom = 0.2f;
+    float flow_curve = 0.5;
     uint8_t cell_size = 20;
-    uint16_t standard_radius = 5;
+    uint16_t standard_radius = 1;
     uint8_t substep_count = 3;
-
-    // Set simulation attributes
+    // // Set simulation attributes
 
     // Setup system parameters
     ParticleSystem system;
@@ -54,8 +50,26 @@ int main()
     system.setWorldSize(window_resolution);
     system.resizeGrid(cell_size);
     system.generateField(flow_zoom, flow_curve);
-
     // Setup system parameters
+
+    uint16_t particle_c = 25;
+    uint16_t particle_r = 25;
+    uint16_t spawn_border = 5;
+    float x_spawn_distance = ((window_width - spawn_border) / particle_c);
+    float y_spawn_distance = ((window_height - spawn_border) / particle_r);
+
+    // Spawn Particles
+    for (int x = 1; x <= particle_c; x++)
+    {
+        for (int y = 1; y <= particle_r; y++)
+        {
+            sf::Vector2f pos = {x_spawn_distance * x + spawn_border, y_spawn_distance * y + spawn_border};
+
+            system.addParticle(pos);
+        }
+    }
+
+    // Spawn Particles
 
     Renderer renderer{window};
 
@@ -63,23 +77,19 @@ int main()
 
     while (window.isOpen())
     {
-
         sf::Event event;
         while (window.pollEvent(event))
         {
+
             if (event.type == sf::Event::Closed)
             {
                 window.close();
                 break;
             }
-
-            // Update particle system
         }
         system.update();
-        window.clear(background_color);
         renderer.render(system);
         window.display();
-
-        return 0;
     }
+    return 0;
 }
