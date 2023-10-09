@@ -2,6 +2,7 @@
 
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <deque>
 
 struct Particle
 {
@@ -9,6 +10,9 @@ public:
     sf::Vector2f position;
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
+
+    std::deque<sf::Vector2f> history; // For tails
+    uint8_t max_history_length = 10;
 
     sf::Color color = sf::Color::Red;
 
@@ -30,6 +34,17 @@ public:
 
         // Reset acceleration
         acceleration = {};
+    }
+
+    void updateHistory()
+    {
+        history.push_back(position);
+
+        // Limit the history length to control the tail length
+        while (history.size() > max_history_length)
+        {
+            history.pop_front();
+        }
     }
 
     void accelerate(sf::Vector2f a)

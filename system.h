@@ -20,6 +20,8 @@ public:
 
     void update()
     {
+        updateHistory();
+
         m_time += m_frame_dt;
         const float step_dt = getStepDt();
         for (uint32_t i{m_num_substep}; i--;)
@@ -139,6 +141,14 @@ private:
 
                 // I don't know if it should be .addVelocity() or .setVelocity()
             }
+        }
+    }
+
+    void updateHistory()
+    {
+        for (Particle &particle : m_particles)
+        {
+            particle.updateHistory();
         }
     }
 };

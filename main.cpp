@@ -65,7 +65,7 @@ int main()
     float flow_zoom = 0.5f;
     float flow_curve = .5f;
     uint8_t cell_size = 15;
-    uint16_t standard_radius = 1;
+    uint16_t standard_radius = 2;
     uint8_t substep_count = 1;
     // // Set simulation attributes
 
@@ -100,6 +100,7 @@ int main()
                 break;
             }
         }
+        window.clear(background_color);
         system.update();
         renderer.render(system);
         window.display();
