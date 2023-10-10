@@ -15,18 +15,8 @@
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
-const sf::Color background_color = sf::Color{20, 15, 0};
+const sf::Color background_color = sf::Color{0, 5, 0};
 const sf::Vector2i window_resolution = {window_width, window_height};
-
-static sf::Color getRainbow(float t)
-{
-    const float r = sin(t);
-    const float g = sin(t + 0.33f * 2.0f * M_PI);
-    const float b = sin(t + 0.66f * 2.0f * M_PI);
-    return {static_cast<uint8_t>(255.0f * r * r),
-            static_cast<uint8_t>(255.0f * g * g),
-            static_cast<uint8_t>(255.0f * b * b)};
-}
 
 int main()
 {
@@ -43,7 +33,7 @@ int main()
     constexpr float flow_zoom = 0.5f;
     constexpr float flow_curve = .5f;
     constexpr float flow_offset = 2.0f;
-    uint8_t cell_size = 20;
+    uint8_t cell_size = 40;
     uint16_t standard_radius = 1;
     uint8_t substep_count = 1;
 
@@ -87,11 +77,11 @@ int main()
             }
         }
 
-        if (clock.getElapsedTime().asSeconds() >= 10)
+        if (clock.getElapsedTime().asSeconds() >= 6)
         {
-            float rZoom = abs(sin(rand()));
+            float rZoom = sin(rand()) / 3 + .5;
             float rCurve = sin(rand()) / 4 + .65;
-            float rOffset = pow(sin(rand()), 2) * 5;
+            float rOffset = pow(sin(rand()), 2) * 7;
 
             std::cout << '(' << rZoom << ", " << rCurve << ", " << rOffset << ")" << std::endl;
 

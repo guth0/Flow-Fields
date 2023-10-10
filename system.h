@@ -101,7 +101,7 @@ private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
-    float speed_coefficent = 2;
+    float speed_coefficent = 7;
 
     float m_time = 0.0f;
     float m_frame_dt = 0.0f;
@@ -150,11 +150,16 @@ private:
 
                 sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
                 // apply that cell's vector to the particle
-                particle.addVelocity(vec, dt); // * speed_coefficent
 
-                particle.slowdown(.10f);
+                // smoother turs
+                // particle.addVelocity(vec, dt);
 
-                // I don't know if it should be .addVelocity() or .setVelocity()
+                // particle.slowdown(.10f);
+
+                // sharper turns
+                particle.setVelocity(vec * speed_coefficent, dt);
+
+                // both .addVelocity() and .setVelocity() work
             }
         }
     }
