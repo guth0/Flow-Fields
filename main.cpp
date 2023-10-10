@@ -33,7 +33,7 @@ int main()
     constexpr float flow_zoom = 0.5f;
     constexpr float flow_curve = .5f;
     constexpr float flow_offset = 2.0f;
-    uint8_t cell_size = 3;
+    uint8_t cell_size = 20;
     uint16_t standard_radius = 1;
     uint8_t substep_count = 1;
 

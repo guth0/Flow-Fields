@@ -30,18 +30,23 @@ public:
             {
                 for (int i = 0; i < history_size - 1; ++i)
                 {
-                    // std::cout << particle.history
-                    sf::Vertex line[] = {
-                        sf::Vertex(particle.history[i]),
-                        sf::Vertex(particle.history[i + 1])};
+                    sf::Vector2f pos = particle.history[i];
+                    if (pos.x > 1 && pos.x < system.m_world_size.x - 1 &&
+                        pos.y > 1 && pos.y < system.m_world_size.y - 1)
+                    {
 
-                    sf::Color color = particle.color;
-                    color.a = static_cast<uint8_t>((color.a / (-i + history_size)) + 100);
+                        sf::Vertex line[] = {
+                            sf::Vertex(particle.history[i]),
+                            sf::Vertex(particle.history[i + 1])};
 
-                    line[0].color = color;
-                    line[1].color = color;
+                        sf::Color color = particle.color;
+                        color.a = static_cast<uint8_t>((color.a / (history_size - i)) + 100);
 
-                    m_target.draw(line, 2, sf::Lines);
+                        line[0].color = color;
+                        line[1].color = color;
+
+                        m_target.draw(line, 2, sf::Lines);
+                    }
                 }
             }
         }

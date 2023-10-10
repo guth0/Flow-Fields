@@ -11,6 +11,8 @@
 class ParticleSystem
 {
 public:
+    sf::Vector2i m_world_size;
+
     uint8_t standard_radius;
 
     ParticleSystem()
@@ -27,14 +29,16 @@ public:
 
         m_time += m_frame_dt;
         const float step_dt = getStepDt();
-        for (uint32_t i{m_num_substep}; i--;)
-        {
 
-            applyGrid(step_dt);
+        applyGrid(step_dt);
 
-            updateParticles(step_dt);
-            updateHistory();
-        }
+        updateParticles(step_dt);
+
+        updateHistory();
+
+        applyBounds();
+
+        // std::cout << m_particles[0].position.x << " -- " << m_particles[0].position.y << std::endl;
     }
 
     void setStandardRadius(uint8_t radius)
@@ -104,12 +108,11 @@ private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
-    float speed_coefficent = 7;
+    float speed_coefficent = 200;
 
     float m_time = 0.0f;
     float m_frame_dt = 0.0f;
 
-    sf::Vector2i m_world_size;
     VectorField m_grid;
     uint16_t m_cell_size;
 
@@ -121,11 +124,34 @@ private:
         }
     }
 
-    void applyGrid(float dt)
+    void applyBounds()
     {
-        // uint16_t i = 0;
         for (Particle &particle : m_particles)
         {
+            if (particle.position.x < standard_radius)
+            {
+                particle.setPosition(m_world_size.x - standard_radius, particle.position.y);
+            }
+            else if (particle.position.x > m_world_size.x)
+            {
+                particle.setPosition(standard_radius, particle.position.y);
+            }
+            else if (particle.position.y < standard_radius)
+            {
+                particle.setPosition(particle.position.x, m_world_size.y - standard_radius);
+            }
+            else if (particle.position.y > m_world_size.y)
+            {
+                particle.setPosition(particle.position.x, standard_radius);
+            }
+        }
+    }
+
+    void applyGrid(float dt)
+    {
+        for (Particle &particle : m_particles)
+        {
+
             if (particle.position.x > standard_radius && particle.position.x < m_world_size.x &&
                 particle.position.y > standard_radius && particle.position.y < m_world_size.y)
             {
@@ -136,37 +162,18 @@ private:
                 float x = cos(m_grid.data[cell_position]);
                 float y = sin(m_grid.data[cell_position]);
 
-                sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
+                sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
                 // smoother turs
                 // particle.addVelocity(vec, dt);
 
-                // particle.slowdown(.10f);
+                // particle.slowdown(.001f);
 
                 // sharper turns
                 particle.setVelocity(vec * speed_coefficent, dt);
 
                 // both .addVelocity() and .setVelocity() work
-            }
-
-            constexpr uint16_t respawn_buffer = 20;
-
-            if (particle.position.x < -respawn_buffer)
-            {
-                particle.setPosition(m_world_size.x - 1, particle.position.y);
-            }
-            else if (particle.position.x > m_world_size.x + respawn_buffer)
-            {
-                particle.setPosition(1, particle.position.y);
-            }
-            else if (particle.position.y < -respawn_buffer)
-            {
-                particle.setPosition(particle.position.x, m_world_size.y - 1);
-            }
-            else if (particle.position.y > m_world_size.y + respawn_buffer)
-            {
-                particle.setPosition(particle.position.x, 1);
             }
         }
     }

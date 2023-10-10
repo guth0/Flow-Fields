@@ -58,6 +58,18 @@ public:
         }
     }
 
+    void forceUpdateHistory()
+    {
+        history.push_front(position);
+
+        // Limit the history length to control the tail length
+        while (history.size() > max_history_length)
+        {
+            history.pop_back();
+        }
+        frames_since_last_history = 0;
+    }
+
     void clearHistory()
     {
         history.clear();
@@ -86,9 +98,9 @@ public:
     void setPosition(float x, float y)
     {
         sf::Vector2f position_ = sf::Vector2f{x, y};
+        position_last = position_ - (position - position_last); // Keep momentum
         position = position_;
-        position_last = position_;
-        clearHistory();
+        forceUpdateHistory();
     }
 
     [[nodiscard]] sf::Vector2f getVelocity(float dt) const
