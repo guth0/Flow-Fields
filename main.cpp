@@ -15,7 +15,7 @@
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
-const sf::Color background_color = sf::Color{0, 5, 0};
+const sf::Color background_color = sf::Color{0, 0, 0, 255};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
 int main()
@@ -33,7 +33,7 @@ int main()
     constexpr float flow_zoom = 0.5f;
     constexpr float flow_curve = .5f;
     constexpr float flow_offset = 2.0f;
-    uint8_t cell_size = 40;
+    uint8_t cell_size = 3;
     uint16_t standard_radius = 1;
     uint8_t substep_count = 1;
 
@@ -77,7 +77,7 @@ int main()
             }
         }
 
-        if (clock.getElapsedTime().asSeconds() >= 6)
+        if (clock.getElapsedTime().asSeconds() >= 2)
         {
             float rZoom = sin(rand()) / 3 + .5;
             float rCurve = sin(rand()) / 4 + .65;

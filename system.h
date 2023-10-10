@@ -1,3 +1,7 @@
+// turn off clear history
+// only draw line between the i and i + 1
+// if "i + 1" or "i" is not the maximum that they can be
+
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -28,9 +32,8 @@ public:
 
             applyGrid(step_dt);
 
-            updateHistory();
-
             updateParticles(step_dt);
+            updateHistory();
         }
     }
 
@@ -123,23 +126,8 @@ private:
         // uint16_t i = 0;
         for (Particle &particle : m_particles)
         {
-            if (particle.position.x < standard_radius)
-            {
-                particle.setPosition(m_world_size.x - standard_radius, particle.position.y);
-            }
-            else if (particle.position.x > m_world_size.x)
-            {
-                particle.setPosition(standard_radius, particle.position.y);
-            }
-            else if (particle.position.y < standard_radius)
-            {
-                particle.setPosition(particle.position.x, m_world_size.y - standard_radius);
-            }
-            else if (particle.position.y > m_world_size.y)
-            {
-                particle.setPosition(particle.position.x, standard_radius);
-            }
-            else
+            if (particle.position.x > standard_radius && particle.position.x < m_world_size.x &&
+                particle.position.y > standard_radius && particle.position.y < m_world_size.y)
             {
 
                 // get position of cell that particle is in
@@ -160,6 +148,25 @@ private:
                 particle.setVelocity(vec * speed_coefficent, dt);
 
                 // both .addVelocity() and .setVelocity() work
+            }
+
+            constexpr uint16_t respawn_buffer = 20;
+
+            if (particle.position.x < -respawn_buffer)
+            {
+                particle.setPosition(m_world_size.x - 1, particle.position.y);
+            }
+            else if (particle.position.x > m_world_size.x + respawn_buffer)
+            {
+                particle.setPosition(1, particle.position.y);
+            }
+            else if (particle.position.y < -respawn_buffer)
+            {
+                particle.setPosition(particle.position.x, m_world_size.y - 1);
+            }
+            else if (particle.position.y > m_world_size.y + respawn_buffer)
+            {
+                particle.setPosition(particle.position.x, 1);
             }
         }
     }
