@@ -66,9 +66,9 @@ public:
         m_grid.window_resolution = size;
     }
 
-    void generateField(float zoom, float curve)
+    void generateField(float zoom, float curve, float offset)
     {
-        m_grid.createField(zoom, curve);
+        m_grid.createField(zoom, curve, offset);
     }
 
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
@@ -123,21 +123,21 @@ private:
         // uint16_t i = 0;
         for (Particle &particle : m_particles)
         {
-            if (particle.position.x < 0)
+            if (particle.position.x < standard_radius)
             {
                 particle.setPosition(m_world_size.x - standard_radius, particle.position.y);
             }
             else if (particle.position.x > m_world_size.x)
             {
-                particle.setPosition(0, particle.position.y);
+                particle.setPosition(standard_radius, particle.position.y);
             }
-            else if (particle.position.y < 0)
+            else if (particle.position.y < standard_radius)
             {
                 particle.setPosition(particle.position.x, m_world_size.y - standard_radius);
             }
             else if (particle.position.y > m_world_size.y)
             {
-                particle.setPosition(particle.position.x, 0);
+                particle.setPosition(particle.position.x, standard_radius);
             }
             else
             {
@@ -150,7 +150,9 @@ private:
 
                 sf::Vector2f vec = sf::Vector2f(x, y) * 30.0f;
                 // apply that cell's vector to the particle
-                particle.setVelocity(vec * speed_coefficent, dt);
+                particle.addVelocity(vec, dt); // * speed_coefficent
+
+                particle.slowdown(.10f);
 
                 // I don't know if it should be .addVelocity() or .setVelocity()
             }

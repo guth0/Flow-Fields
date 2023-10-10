@@ -15,7 +15,7 @@
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
-const sf::Color background_color = sf::Color{0, 20, 20};
+const sf::Color background_color = sf::Color{20, 15, 0};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
 static sf::Color getRainbow(float t)
@@ -35,16 +35,20 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
-    constexpr uint32_t frame_rate = 60;
+    constexpr uint32_t frame_rate = 45;
     window.setFramerateLimit(frame_rate);
     // Set up window
 
     // Set simulation attributes
-    float flow_zoom = 0.5f;
-    float flow_curve = .5f;
-    uint8_t cell_size = 15;
+    constexpr float flow_zoom = 0.5f;
+    constexpr float flow_curve = .5f;
+    constexpr float flow_offset = 2.0f;
+    uint8_t cell_size = 20;
     uint16_t standard_radius = 1;
     uint8_t substep_count = 1;
+
+    uint8_t field_seed = 220;
+    srand(field_seed);
     // // Set simulation attributes
 
     // Setup system parameters
@@ -57,7 +61,7 @@ int main()
 
     system.setWorldSize(window_resolution);
     system.resizeGrid(cell_size);
-    system.generateField(flow_zoom, flow_curve);
+    system.generateField(flow_zoom, flow_curve, flow_offset);
     // Setup system parameters
 
     // Spawner
@@ -69,8 +73,6 @@ int main()
     Renderer renderer{window};
 
     sf::Clock clock;
-    sf::Time elapsed;
-    float fps;
 
     while (window.isOpen())
     {
@@ -85,11 +87,17 @@ int main()
             }
         }
 
-        elapsed = clock.restart();
+        if (clock.getElapsedTime().asSeconds() >= 10)
+        {
+            float rZoom = abs(sin(rand()));
+            float rCurve = sin(rand()) / 4 + .65;
+            float rOffset = pow(sin(rand()), 2) * 5;
 
-        fps = 1.0f / elapsed.asSeconds();
+            std::cout << '(' << rZoom << ", " << rCurve << ", " << rOffset << ")" << std::endl;
 
-        std::cout << fps << std::endl;
+            system.generateField(rZoom, rCurve, rOffset);
+            clock.restart();
+        }
 
         window.clear(background_color);
         system.update();

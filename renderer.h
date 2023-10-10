@@ -20,10 +20,10 @@ public:
         const std::vector<Particle> &particles = system.getParticles();
         for (const Particle &particle : particles)
         {
-            circle.setPosition(particle.position);
-            circle.setScale(system.standard_radius, system.standard_radius);
-            circle.setFillColor(particle.color);
-            m_target.draw(circle);
+            // circle.setPosition(particle.position);
+            // circle.setScale(system.standard_radius, system.standard_radius);
+            // circle.setFillColor(particle.color);
+            // m_target.draw(circle);
             uint8_t history_size = particle.history.size();
 
             if (history_size >= 2)

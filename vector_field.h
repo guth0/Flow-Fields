@@ -31,13 +31,13 @@ public:
         data.resize((width + 2) * (height + 2));
     }
 
-    void createField(float zoom, float curve)
+    void createField(float zoom, float curve, float offset)
     {
         for (int x = 0; x < width + 2; x++)
         {
             for (int y = 0; y < height + 2; y++)
             {
-                float angle = (pow(cos(x * zoom), 3) + sqrt(abs(sin(y * zoom)))) * curve - 1;
+                float angle = (pow(cos(x * zoom), 3) + sqrt(abs(sin(y * zoom)))) * curve - offset;
                 data[(x * (height + 2)) + y] = angle;
             }
         }

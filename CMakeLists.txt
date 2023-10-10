@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(PhysicsEngine)
+project(FlowFields)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -11,3 +11,5 @@ add_executable(main main.cpp renderer.h system.h particle.h vector_field.h spawn
 target_include_directories(main PRIVATE ${SFML_INCLUDE_DIR})
 
 target_link_libraries(main sfml-graphics)
+
+

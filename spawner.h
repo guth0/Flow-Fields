@@ -41,8 +41,8 @@ public:
 private:
     ParticleSystem &system;
     sf::Vector2i world_size;
-    const float transparency = 0.75f;
+    const float transparency = 0.50f;
     const uint32_t num_particles = 2000;
-    const uint8_t seed = 230;
+    const uint8_t seed = 130;
     const sf::Color color = sf::Color{255, 0, 0, static_cast<uint8_t>(transparency * 255)};
 };
