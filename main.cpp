@@ -1,16 +1,11 @@
 // TODO:
-//  Make all variables defined in main.cpp then passed down
-//  Fix srand(), changing field_seed does nothing
 //  Add new types of noise other than sin/cos wave noise
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <cmath>
-#include <cstdlib>
 #include "system.h"
 #include "renderer.h"
 #include "spawner.h"
-#include "vector_field.h"
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;

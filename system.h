@@ -1,9 +1,4 @@
-// turn off clear history
-// only draw line between the i and i + 1
-// if "i + 1" or "i" is not the maximum that they can be
-
 #pragma once
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "particle.h"
 #include "vector_field.h"
@@ -37,8 +32,6 @@ public:
         updateHistory();
 
         applyBounds();
-
-        // std::cout << m_particles[0].position.x << " -- " << m_particles[0].position.y << std::endl;
     }
 
     void setStandardRadius(uint8_t radius)
