@@ -73,14 +73,14 @@ public:
         m_grid.window_resolution = size;
     }
 
-    void generateField(float zoom, float curve, float offset)
-    {
-        m_grid.createField(zoom, curve, offset);
-    }
-
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
     {
         particle.setVelocity(v, getStepDt());
+    }
+
+    void generateField(float zoom, float curve, float offset)
+    {
+        m_grid.createField(zoom, curve, offset);
     }
 
     [[nodiscard]] const std::vector<Particle> &getParticles() const

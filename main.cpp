@@ -1,9 +1,7 @@
-// use "./build/main" in terminal to run
-
-// particles travel abt 1px a frame
-// only respawn particles once they are
-//      uint16_t respawn_buffer = max_history_length * history_frames_between * 1px/frame
-// respawn_buffer pixels from the border of the screen
+// TODO:
+//  Make all variables defined in main.cpp then passed down
+//  Fix srand(), changing field_seed does nothing
+//  Add new types of noise other than sin/cos wave noise
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -12,11 +10,22 @@
 #include "system.h"
 #include "renderer.h"
 #include "spawner.h"
+#include "vector_field.h"
 
 constexpr uint16_t window_height = 850;
 constexpr uint16_t window_width = window_height * 1512 / 982;
 const sf::Color background_color = sf::Color{0, 0, 0, 255};
 const sf::Vector2i window_resolution = {window_width, window_height};
+
+static void generateRandField(ParticleSystem &system_)
+{
+
+    float rZoom = sin(rand()) / 3 + .5;
+    float rCurve = sin(rand()) / 4 + .65;
+    float rOffset = pow(sin(rand()), 2) * 7;
+
+    system_.generateField(rZoom, rCurve, rOffset);
+}
 
 int main()
 {
@@ -33,25 +42,32 @@ int main()
     constexpr float flow_zoom = 0.5f;
     constexpr float flow_curve = .5f;
     constexpr float flow_offset = 2.0f;
-    uint8_t cell_size = 3;
-    uint16_t standard_radius = 1;
-    uint8_t substep_count = 1;
 
-    uint8_t field_seed = 220;
-    srand(field_seed);
+    constexpr uint8_t cell_size = 50; // cant be const for some reason
+    constexpr uint16_t standard_radius = 1;
+
+    constexpr uint8_t field_refresh_seconds = 3;
+    // constexpr uint8_t substep_count = 1;
+
+    uint8_t field_seed = 2;
+
     // // Set simulation attributes
 
     // Setup system parameters
     ParticleSystem system;
 
-    system.setSubStepsCount(substep_count);
+    // system.setSubStepsCount(substep_count);
     system.setSimulationUpdateRate(frame_rate);
 
     system.setStandardRadius(standard_radius);
 
     system.setWorldSize(window_resolution);
     system.resizeGrid(cell_size);
-    system.generateField(flow_zoom, flow_curve, flow_offset);
+
+    srand(field_seed);
+
+    generateRandField(system);
+
     // Setup system parameters
 
     // Spawner
@@ -64,8 +80,15 @@ int main()
 
     sf::Clock clock;
 
+    sf::Clock timer;
+    uint32_t fps_total;
+    uint16_t frames = 0;
+    constexpr uint8_t fps_frames = 30;
+
     while (window.isOpen())
     {
+        frames++;
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -77,15 +100,24 @@ int main()
             }
         }
 
-        if (clock.getElapsedTime().asSeconds() >= 3)
+        // handle FPS
+        fps_total += 1 / timer.restart().asSeconds();
+
+        if (frames >= fps_frames)
         {
-            float rZoom = sin(rand()) / 3 + .5;
-            float rCurve = sin(rand()) / 4 + .65;
-            float rOffset = pow(sin(rand()), 2) * 7;
+            uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
 
-            std::cout << '(' << rZoom << ", " << rCurve << ", " << rOffset << ")" << std::endl;
+            std::cout << "FPS: " << avg_fps << std::endl;
 
-            system.generateField(rZoom, rCurve, rOffset);
+            fps_total = 0;
+            frames = 0;
+        }
+        // handle FPS
+
+        if (clock.getElapsedTime().asSeconds() >= field_refresh_seconds)
+        {
+
+            generateRandField(system);
             clock.restart();
         }
 
