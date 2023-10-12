@@ -1,5 +1,4 @@
 // TODO:
-//  Add new types of noise other than sin/cos wave noise
 //  remove substeps
 
 #include <iostream>
@@ -20,7 +19,7 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
-    constexpr uint32_t frame_rate = 45;
+    constexpr uint32_t frame_rate = 60;
     window.setFramerateLimit(frame_rate);
     //// Set up window ////
 
@@ -96,13 +95,6 @@ int main()
             frames = 0;
         }
         //// handle FPS ////
-
-        // if (clock.getElapsedTime().asSeconds() >= field_refresh_seconds)
-        // {
-
-        //     generateRandField(system);
-        //     clock.restart();
-        // }
 
         window.clear(background_color);
         system.update();

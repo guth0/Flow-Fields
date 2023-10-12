@@ -24,11 +24,10 @@ public:
     {
 
         m_time += m_frame_dt;
-        const float step_dt = getStepDt();
 
-        applyGrid(step_dt);
+        applyGrid(m_frame_dt);
 
-        updateParticles(step_dt);
+        updateParticles(m_frame_dt);
 
         updateHistory();
 
@@ -56,11 +55,6 @@ public:
         m_center = window_resolution * .5f;
     }
 
-    void setSubStepsCount(uint32_t sub_steps)
-    {
-        m_num_substep = sub_steps;
-    }
-
     void setWorldSize(sf::Vector2i size)
     {
         m_world_size = size;
@@ -69,7 +63,7 @@ public:
 
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
     {
-        particle.setVelocity(v, getStepDt());
+        particle.setVelocity(v, m_frame_dt);
     }
 
     void generateField()
@@ -92,13 +86,7 @@ public:
         return m_time;
     }
 
-    [[nodiscard]] float getStepDt() const
-    {
-        return m_frame_dt / static_cast<float>(m_num_substep);
-    }
-
 private:
-    uint32_t m_num_substep = 1; // dont think substeps are needed
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
@@ -108,7 +96,7 @@ private:
     static constexpr uint16_t speed_coefficent2 = 200;
 
     float m_time = 0.0f;
-    float m_frame_dt = 0.0f;
+    float m_frame_dt;
 
     PerlinField m_grid;
     uint16_t m_cell_size;
