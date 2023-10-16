@@ -85,12 +85,20 @@ public:
         position_last = position - (v * dt);
     }
 
+    void ratioSetVelocity(sf::Vector2f v, float dt, float ratio)
+    {
+        sf::Vector2f pos = ((position - position_last) * (1.0f - ratio) * dt);
+        pos += (position - (v * dt)) * ratio;
+
+        position_last = pos;
+    }
+
     void addVelocity(sf::Vector2f v, float dt)
     {
         position_last -= v * dt;
     }
 
-    void slowdown(float ratio)
+    void slowDown(float ratio)
     {
         position_last = position_last + ratio * (position - position_last);
     }

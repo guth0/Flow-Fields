@@ -1,5 +1,5 @@
 // TODO:
-//  Add new types of noise other than sin/cos wave noise
+//  remove substeps
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -12,44 +12,33 @@ constexpr uint16_t window_width = window_height * 1512 / 982;
 const sf::Color background_color = sf::Color{0, 0, 0, 255};
 const sf::Vector2i window_resolution = {window_width, window_height};
 
-static void generateRandField(ParticleSystem &system_)
-{
-
-    float rZoom = sin(rand()) / 3 + .5;
-    float rCurve = sin(rand()) / 4 + .65;
-    float rOffset = pow(sin(rand()), 2) * 7;
-
-    system_.generateField(rZoom, rCurve, rOffset);
-}
-
 int main()
 {
 
-    // Set up window
+    //// Set up window ////
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
-    constexpr uint32_t frame_rate = 45;
+    constexpr uint32_t frame_rate = 60;
     window.setFramerateLimit(frame_rate);
-    // Set up window
+    //// Set up window ////
 
-    // Set simulation attributes
-    constexpr float flow_zoom = 0.5f;
-    constexpr float flow_curve = .5f;
-    constexpr float flow_offset = 2.0f;
-
-    constexpr uint8_t cell_size = 50; // cant be const for some reason
+    //// Set simulation attributes ////
+    constexpr uint8_t flow_cell_size = 50; // in px
     constexpr uint16_t standard_radius = 1;
 
-    constexpr uint8_t field_refresh_seconds = 3;
+    const uint16_t field_width = floor(window_resolution.x / flow_cell_size);
+    const uint16_t field_height = floor(window_resolution.y / flow_cell_size);
+
+    constexpr uint16_t field_seed = 1302; // up to 65535
+
+    // constexpr uint8_t field_refresh_seconds = 3;
     // constexpr uint8_t substep_count = 1;
 
-    uint8_t field_seed = 2;
+    //// Set simulation attributes ////
 
-    // // Set simulation attributes
-
-    // Setup system parameters
-    ParticleSystem system;
+    //// Setup system parameters ////
+    ParticleSystem system(field_seed);
 
     // system.setSubStepsCount(substep_count);
     system.setSimulationUpdateRate(frame_rate);
@@ -57,19 +46,17 @@ int main()
     system.setStandardRadius(standard_radius);
 
     system.setWorldSize(window_resolution);
-    system.resizeGrid(cell_size);
 
-    srand(field_seed);
+    system.resizeGrid(field_width, field_height, flow_cell_size);
 
-    generateRandField(system);
+    system.generateField();
+    //// Setup system parameters ////
 
-    // Setup system parameters
-
-    // Spawner
+    //// Spawner ////
     Spawner spawner(system, window_resolution);
 
     spawner.spawnParticles();
-    // Spawner
+    //// Spawner ////
 
     Renderer renderer{window};
 
@@ -95,7 +82,7 @@ int main()
             }
         }
 
-        // handle FPS
+        //// handle FPS ////
         fps_total += 1 / timer.restart().asSeconds();
 
         if (frames >= fps_frames)
@@ -107,14 +94,7 @@ int main()
             fps_total = 0;
             frames = 0;
         }
-        // handle FPS
-
-        if (clock.getElapsedTime().asSeconds() >= field_refresh_seconds)
-        {
-
-            generateRandField(system);
-            clock.restart();
-        }
+        //// handle FPS ////
 
         window.clear(background_color);
         system.update();

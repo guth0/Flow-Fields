@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "particle.h"
-#include "vector_field.h"
+#include "noise.h"
 
 class ParticleSystem
 {
@@ -10,7 +10,8 @@ public:
 
     uint8_t standard_radius;
 
-    ParticleSystem()
+    ParticleSystem(uint16_t seed_)
+        : m_grid{seed_}
     {
     }
 
@@ -23,11 +24,10 @@ public:
     {
 
         m_time += m_frame_dt;
-        const float step_dt = getStepDt();
 
-        applyGrid(step_dt);
+        applyGrid(m_frame_dt);
 
-        updateParticles(step_dt);
+        updateParticles(m_frame_dt);
 
         updateHistory();
 
@@ -44,9 +44,9 @@ public:
         m_frame_dt = 1.0f / static_cast<float>(rate);
     }
 
-    void resizeGrid(uint16_t cell_size)
+    void resizeGrid(uint16_t height, uint16_t width, uint16_t cell_size)
     {
-        m_grid.setSize(cell_size);
+        m_grid.setSize(width + 2, height + 2); // add buffers on each side
         m_cell_size = cell_size;
     }
 
@@ -55,25 +55,20 @@ public:
         m_center = window_resolution * .5f;
     }
 
-    void setSubStepsCount(uint32_t sub_steps)
-    {
-        m_num_substep = sub_steps;
-    }
-
     void setWorldSize(sf::Vector2i size)
     {
         m_world_size = size;
-        m_grid.window_resolution = size;
+        // m_grid.window_resolution = size;
     }
 
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
     {
-        particle.setVelocity(v, getStepDt());
+        particle.setVelocity(v, m_frame_dt);
     }
 
-    void generateField(float zoom, float curve, float offset)
+    void generateField()
     {
-        m_grid.createField(zoom, curve, offset);
+        m_grid.generateField();
     }
 
     [[nodiscard]] const std::vector<Particle> &getParticles() const
@@ -91,22 +86,19 @@ public:
         return m_time;
     }
 
-    [[nodiscard]] float getStepDt() const
-    {
-        return m_frame_dt / static_cast<float>(m_num_substep);
-    }
-
 private:
-    uint32_t m_num_substep = 1; // dont know if substeps are needed
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
-    float speed_coefficent = 200;
+    static constexpr uint16_t speed_coefficent1 = 20;
+    static constexpr float slow_ratio = 0.1f; // slow down ratio%
+
+    static constexpr uint16_t speed_coefficent2 = 200;
 
     float m_time = 0.0f;
-    float m_frame_dt = 0.0f;
+    float m_frame_dt;
 
-    VectorField m_grid;
+    PerlinField m_grid;
     uint16_t m_cell_size;
 
     void updateParticles(float dt)
@@ -150,6 +142,7 @@ private:
             {
 
                 // get position of cell that particle is in
+                // the "+1"s are for the buffers of the grid
                 uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
                 float x = cos(m_grid.data[cell_position]);
@@ -158,15 +151,12 @@ private:
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
-                // smoother turs
-                // particle.addVelocity(vec, dt);
+                //// smoother turs ////
+                particle.addVelocity(vec * (float)speed_coefficent1, dt);
+                particle.slowDown(slow_ratio);
 
-                // particle.slowdown(.001f);
-
-                // sharper turns
-                particle.setVelocity(vec * speed_coefficent, dt);
-
-                // both .addVelocity() and .setVelocity() work
+                //// sharper turns ////
+                // particle.setVelocity(vec * (float)speed_coefficent2, dt);
             }
         }
     }
