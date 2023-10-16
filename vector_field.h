@@ -28,17 +28,17 @@ public:
         width = floor(window_resolution.x / cell_size_);
         height = floor(window_resolution.y / cell_size_);
 
-        data.resize(width * height);
+        data.resize((width + 2) * (height + 2));
     }
 
-    void createField(float zoom, float curve)
+    void createField(float zoom, float curve, float offset)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < width + 2; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height + 2; y++)
             {
-                float angle = (cos(x * zoom) + sin(y * zoom)) * curve;
-                data[(x * height) + y] = angle;
+                float angle = (cos(x * zoom) + abs(sin(y * zoom))) * curve - offset;
+                data[(x * (height + 2)) + y] = angle;
             }
         }
     }

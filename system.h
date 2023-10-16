@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "particle.h"
 #include "vector_field.h"
@@ -7,11 +6,13 @@
 class ParticleSystem
 {
 public:
+    sf::Vector2i m_world_size;
+
     uint8_t standard_radius;
 
     ParticleSystem()
     {
-    } // Auto create default constructor
+    }
 
     Particle &addParticle(sf::Vector2f position)
     {
@@ -20,16 +21,19 @@ public:
 
     void update()
     {
+
         m_time += m_frame_dt;
         const float step_dt = getStepDt();
-        for (uint32_t i{m_num_substep}; i--;)
-        {
 
-            applyGrid(step_dt);
+        applyGrid(step_dt);
 
-            updateParticles(step_dt);
-        }
+        updateParticles(step_dt);
+
+        updateHistory();
+
+        applyBounds();
     }
+
     void setStandardRadius(uint8_t radius)
     {
         standard_radius = radius;
@@ -56,25 +60,20 @@ public:
         m_num_substep = sub_steps;
     }
 
-    void setDrag(float drag)
-    {
-        m_drag = drag;
-    }
-
     void setWorldSize(sf::Vector2i size)
     {
         m_world_size = size;
         m_grid.window_resolution = size;
     }
 
-    void generateField(float zoom, float curve)
-    {
-        m_grid.createField(zoom, curve);
-    }
-
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
     {
         particle.setVelocity(v, getStepDt());
+    }
+
+    void generateField(float zoom, float curve, float offset)
+    {
+        m_grid.createField(zoom, curve, offset);
     }
 
     [[nodiscard]] const std::vector<Particle> &getParticles() const
@@ -99,14 +98,14 @@ public:
 
 private:
     uint32_t m_num_substep = 1; // dont know if substeps are needed
-    float m_drag = 0.75f;
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
+
+    float speed_coefficent = 200;
 
     float m_time = 0.0f;
     float m_frame_dt = 0.0f;
 
-    sf::Vector2i m_world_size;
     VectorField m_grid;
     uint16_t m_cell_size;
 
@@ -118,27 +117,65 @@ private:
         }
     }
 
-    void applyGrid(float dt)
+    void applyBounds()
     {
-
         for (Particle &particle : m_particles)
         {
-            if (particle.position.x > standard_radius && particle.position.x < m_world_size.x - standard_radius &&
-                particle.position.y > standard_radius && particle.position.y < m_world_size.y - standard_radius)
+            if (particle.position.x < standard_radius)
+            {
+                particle.setPosition(m_world_size.x - standard_radius, particle.position.y);
+            }
+            else if (particle.position.x > m_world_size.x)
+            {
+                particle.setPosition(standard_radius, particle.position.y);
+            }
+            else if (particle.position.y < standard_radius)
+            {
+                particle.setPosition(particle.position.x, m_world_size.y - standard_radius);
+            }
+            else if (particle.position.y > m_world_size.y)
+            {
+                particle.setPosition(particle.position.x, standard_radius);
+            }
+        }
+    }
+
+    void applyGrid(float dt)
+    {
+        for (Particle &particle : m_particles)
+        {
+
+            if (particle.position.x > standard_radius && particle.position.x < m_world_size.x &&
+                particle.position.y > standard_radius && particle.position.y < m_world_size.y)
             {
 
                 // get position of cell that particle is in
-                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size) * m_grid.width;
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
                 float x = cos(m_grid.data[cell_position]);
                 float y = sin(m_grid.data[cell_position]);
 
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
-                particle.addVelocity(vec, dt);
 
-                // I don't know if it should be .addVelocity() or .setVelocity()
+                // smoother turs
+                // particle.addVelocity(vec, dt);
+
+                // particle.slowdown(.001f);
+
+                // sharper turns
+                particle.setVelocity(vec * speed_coefficent, dt);
+
+                // both .addVelocity() and .setVelocity() work
             }
+        }
+    }
+
+    void updateHistory()
+    {
+        for (Particle &particle : m_particles)
+        {
+            particle.updateHistory();
         }
     }
 };
