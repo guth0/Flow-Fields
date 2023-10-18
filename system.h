@@ -25,7 +25,7 @@ public:
 
         m_time += m_frame_dt;
 
-        applyGrid(m_frame_dt);
+        applyGrid(m_frame_dt, m_time / 10);
 
         updateParticles(m_frame_dt);
 
@@ -132,7 +132,7 @@ private:
         }
     }
 
-    void applyGrid(float dt)
+    void applyGrid(float dt, float t)
     {
         for (Particle &particle : m_particles)
         {
@@ -145,8 +145,8 @@ private:
                 // the "+1"s are for the buffers of the grid
                 uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
-                float x = cos(m_grid.data[cell_position]);
-                float y = sin(m_grid.data[cell_position]);
+                float x = cos(m_grid.data[cell_position] + t);
+                float y = sin(m_grid.data[cell_position] + t);
 
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
