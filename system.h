@@ -25,7 +25,7 @@ public:
 
         m_time += m_frame_dt;
 
-        applyGrid(m_frame_dt, m_time / 10);
+        applyGrid(m_frame_dt, m_time * rotation_coefficent);
 
         updateParticles(m_frame_dt);
 
@@ -90,10 +90,10 @@ private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
-    static constexpr uint16_t speed_coefficent1 = 20;
-    static constexpr float slow_ratio = 0.1f; // slow down ratio%
+    static constexpr float rotation_coefficent = 0.1f;
 
-    static constexpr uint16_t speed_coefficent2 = 200;
+    static constexpr uint16_t speed_coefficent = 20;
+    static constexpr float slow_ratio = 0.1f; // slow down ratio%
 
     float m_time = 0.0f;
     float m_frame_dt;
@@ -151,12 +151,10 @@ private:
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
-                //// smoother turs ////
-                particle.addVelocity(vec * (float)speed_coefficent1, dt);
+                particle.addVelocity(vec * (float)speed_coefficent, dt);
                 particle.slowDown(slow_ratio);
 
-                //// sharper turns ////
-                // particle.setVelocity(vec * (float)speed_coefficent2, dt);
+                // can use particle.setVelocity aswell
             }
         }
     }

@@ -30,7 +30,7 @@ int main()
     const uint16_t field_width = floor(window_resolution.x / flow_cell_size);
     const uint16_t field_height = floor(window_resolution.y / flow_cell_size);
 
-    constexpr uint16_t field_seed = 1302; // up to 65535
+    constexpr uint16_t field_seed = 11242; // up to 65,535
 
     // constexpr uint8_t field_refresh_seconds = 3;
     // constexpr uint8_t substep_count = 1;

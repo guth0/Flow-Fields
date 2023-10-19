@@ -43,9 +43,9 @@ private:
     sf::Vector2i world_size;
     const float transparency = 0.75f;
     const uint32_t num_particles = 1000;
-    const uint8_t seed = 111;
+    const uint8_t seed = 131; // basically arbitrary
     const uint8_t alpha = static_cast<uint8_t>(transparency * 255);
-    const sf::Color color = sf::Color{100, 100, 255, alpha};
+    const sf::Color color = sf::Color{110, 110, 255, alpha};
 
     static sf::Color getRainbow(float t)
     {
