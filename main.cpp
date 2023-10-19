@@ -37,8 +37,14 @@ int main()
 
     //// Set simulation attributes ////
 
+    //// Setup sound ////
+    SoundHandler audio;
+
+    audio.initialize();
+    //// Setup sound ////
+
     //// Setup system parameters ////
-    ParticleSystem system(field_seed);
+    ParticleSystem system(field_seed, audio);
 
     // system.setSubStepsCount(substep_count);
     system.setSimulationUpdateRate(frame_rate);
@@ -62,15 +68,15 @@ int main()
 
     sf::Clock clock;
 
+    //// Setup FPS ////
     sf::Clock timer;
     uint32_t fps_total;
     uint16_t frames = 0;
     constexpr uint8_t fps_frames = 30;
+    //// Setup FPS ////
 
     while (window.isOpen())
     {
-        frames++;
-
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -78,11 +84,14 @@ int main()
             if (event.type == sf::Event::Closed)
             {
                 window.close();
+                audio.quit();
                 break;
             }
         }
 
         //// handle FPS ////
+        frames++;
+
         fps_total += 1 / timer.restart().asSeconds();
 
         if (frames >= fps_frames)

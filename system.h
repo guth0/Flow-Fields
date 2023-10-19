@@ -2,16 +2,16 @@
 #include <SFML/Graphics.hpp>
 #include "particle.h"
 #include "noise.h"
+#include "sounds.h"
 
 class ParticleSystem
 {
 public:
     sf::Vector2i m_world_size;
-
     uint8_t standard_radius;
 
-    ParticleSystem(uint16_t seed_)
-        : m_grid{seed_}
+    ParticleSystem(uint16_t seed_, SoundHandler audio)
+        : m_grid{seed_}, m_audio{audio}
     {
     }
 
@@ -30,6 +30,8 @@ public:
         updateParticles(m_frame_dt);
 
         updateHistory();
+
+        applySound(m_frame_dt);
 
         applyBounds();
     }
@@ -101,6 +103,9 @@ private:
     PerlinField m_grid;
     uint16_t m_cell_size;
 
+    SoundHandler m_audio;
+    const sf::Vector2f base_velocity = sf::Vector2f(1.0f, 0.0f);
+
     void updateParticles(float dt)
     {
         for (Particle &particle : m_particles)
@@ -158,6 +163,16 @@ private:
                 //// sharper turns ////
                 // particle.setVelocity(vec * (float)speed_coefficent2, dt);
             }
+        }
+    }
+
+    void applySound(float dt)
+    {
+        const float amplitude = m_audio.getAmplitude();
+
+        for (Particle &particle : m_particles)
+        {
+            particle.addVelocity(base_velocity * amplitude, dt);
         }
     }
 
