@@ -13,17 +13,21 @@ public:
     void render(const ParticleSystem &system) const
     {
 
-        // Render objects
+        //\\// Render objects //\\//
         sf::CircleShape circle{1.0f};
         circle.setPointCount(32);
         circle.setOrigin(1.0f, 1.0f);
         const std::vector<Particle> &particles = system.getParticles();
         for (const Particle &particle : particles)
         {
+            //\\// Render Point //\\//
             // circle.setPosition(particle.position);
             // circle.setScale(system.standard_radius, system.standard_radius);
             // circle.setFillColor(particle.color);
             // m_target.draw(circle);
+            //\\// Render Point //\\//
+
+            //\\// Render Tail //\\//
             uint8_t history_size = particle.history.size();
 
             if (history_size >= 2)
@@ -49,6 +53,7 @@ public:
                     }
                 }
             }
+            //\\// Render Tail //\\//
         }
     }
 

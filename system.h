@@ -13,6 +13,7 @@ public:
     ParticleSystem(uint16_t seed_)
         : m_grid{seed_}
     {
+        srand(seed_);
     }
 
     Particle &addParticle(sf::Vector2f position)
@@ -31,7 +32,15 @@ public:
 
         updateHistory();
 
-        applyBounds();
+        //\\// No randomness in respawn //\\//
+        // applyBounds(); // particles will spawn exactly across from where they exected the bounds
+
+        //\\// complete random respawns //\\//
+        // applyBoundsRand();
+        //\\// small variation when on respawning //\\//
+
+        constexpr uint8_t respawn_distance = 100;
+        applyBoundsSemiRand(respawn_distance);
     }
 
     void setStandardRadius(uint8_t radius)
@@ -58,7 +67,6 @@ public:
     void setWorldSize(sf::Vector2i size)
     {
         m_world_size = size;
-        // m_grid.window_resolution = size;
     }
 
     void setParticleVelocity(Particle &particle, sf::Vector2f v)
@@ -132,6 +140,58 @@ private:
         }
     }
 
+    void applyBoundsRand()
+    {
+        for (Particle &particle : m_particles)
+        {
+            if (particle.position.x < standard_radius)
+            {
+                particle.setPosition(m_world_size.x - standard_radius, rand() % m_world_size.y);
+            }
+            else if (particle.position.x > m_world_size.x)
+            {
+                particle.setPosition(standard_radius, rand() % m_world_size.y);
+            }
+            else if (particle.position.y < standard_radius)
+            {
+                particle.setPosition(rand() % m_world_size.x, m_world_size.y - standard_radius);
+            }
+            else if (particle.position.y > m_world_size.y)
+            {
+                particle.setPosition(rand() % m_world_size.x, standard_radius);
+            }
+        }
+    }
+
+    void applyBoundsSemiRand(uint8_t dist)
+    {
+        int8_t offset;
+
+        for (Particle &particle : m_particles)
+        {
+            if (particle.position.x < standard_radius)
+            {
+                offset = (rand() % (2 * dist)) - dist;
+                particle.setPosition(m_world_size.x - standard_radius, particle.position.y + offset);
+            }
+            else if (particle.position.x > m_world_size.x)
+            {
+                offset = (rand() % (2 * dist)) - dist;
+                particle.setPosition(standard_radius, particle.position.y + offset);
+            }
+            else if (particle.position.y < standard_radius)
+            {
+                offset = (rand() % (2 * dist)) - dist;
+                particle.setPosition(particle.position.x + offset, m_world_size.y - standard_radius);
+            }
+            else if (particle.position.y > m_world_size.y)
+            {
+                offset = (rand() % (2 * dist)) - dist;
+                particle.setPosition(particle.position.x + offset, standard_radius);
+            }
+        }
+    }
+
     void applyGrid(float dt, float t)
     {
         for (Particle &particle : m_particles)
@@ -167,5 +227,3 @@ private:
         }
     }
 };
-
-//

@@ -1,5 +1,3 @@
-// reused from particle physics engine
-
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <deque>
@@ -17,8 +15,6 @@ public:
     std::deque<sf::Vector2f> history;
 
     sf::Color color = sf::Color::Red;
-
-    // Particle() = default;
 
     Particle(sf::Vector2f position_) // constructor
         : position{position_}, position_last{position_}, acceleration{0.0f, 0.0f}

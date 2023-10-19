@@ -15,15 +15,15 @@ const sf::Vector2i window_resolution = {window_width, window_height};
 int main()
 {
 
-    //// Set up window ////
+    //\\// Set up window //\\//
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
     constexpr uint32_t frame_rate = 60;
     window.setFramerateLimit(frame_rate);
-    //// Set up window ////
+    //\\// Set up window //\\//
 
-    //// Set simulation attributes ////
+    //\\// Set simulation attributes //\\//
     constexpr uint8_t flow_cell_size = 50; // in px
     constexpr uint16_t standard_radius = 1;
 
@@ -35,9 +35,9 @@ int main()
     // constexpr uint8_t field_refresh_seconds = 3;
     // constexpr uint8_t substep_count = 1;
 
-    //// Set simulation attributes ////
+    //\\// Set simulation attributes //\\//
 
-    //// Setup system parameters ////
+    //\\// Setup system parameters //\\//
     ParticleSystem system(field_seed);
 
     // system.setSubStepsCount(substep_count);
@@ -50,13 +50,13 @@ int main()
     system.resizeGrid(field_width, field_height, flow_cell_size);
 
     system.generateField();
-    //// Setup system parameters ////
+    //\\// Setup system parameters //\\//
 
-    //// Spawner ////
+    //\\// Spawner //\\//
     Spawner spawner(system, window_resolution);
 
     spawner.spawnParticles();
-    //// Spawner ////
+    //\\// Spawner //\\//
 
     Renderer renderer{window};
 
@@ -82,7 +82,7 @@ int main()
             }
         }
 
-        //// handle FPS ////
+        //\\// handle FPS //\\//
         fps_total += 1 / timer.restart().asSeconds();
 
         if (frames >= fps_frames)
@@ -94,7 +94,7 @@ int main()
             fps_total = 0;
             frames = 0;
         }
-        //// handle FPS ////
+        //\\// handle FPS //\\//
 
         window.clear(background_color);
         system.update();

@@ -26,25 +26,13 @@ public:
         }
     }
 
-    void respawnParticle()
-    {
-        float xRand = rand() % world_size.x * 0.1f;
-        float yRand = rand() % world_size.y;
-
-        sf::Vector2f pos = {xRand, yRand};
-
-        Particle &particle = system.addParticle(pos);
-
-        particle.color = color;
-    }
-
 private:
     ParticleSystem &system;
     sf::Vector2i world_size;
-    const float transparency = 0.75f;
-    const uint32_t num_particles = 1000;
-    const uint8_t seed = 131; // basically arbitrary
-    const uint8_t alpha = static_cast<uint8_t>(transparency * 255);
+    static constexpr float transparency = 0.75f;
+    static constexpr uint32_t num_particles = 1000;
+    static constexpr uint8_t seed = 131; // arbitrary (makes the simulation deterministic)
+    static constexpr uint8_t alpha = static_cast<uint8_t>(transparency * 255);
     const sf::Color color = sf::Color{110, 110, 255, alpha};
 
     static sf::Color getRainbow(float t)
