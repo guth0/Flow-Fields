@@ -6,9 +6,7 @@
 class ParticleSystem
 {
 public:
-    sf::Vector2i m_world_size;
-
-    uint8_t standard_radius;
+    static sf::Vector2i m_world_size;
 
     ParticleSystem(uint16_t seed_)
         : m_grid{seed_}
@@ -16,7 +14,7 @@ public:
         srand(seed_);
     }
 
-    Particle &addParticle(sf::Vector2f position)
+    inline Particle &addParticle(sf::Vector2f position)
     {
         return m_particles.emplace_back(position);
     }
@@ -98,6 +96,8 @@ private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
 
+    static uint8_t standard_radius;
+
     static constexpr float rotation_coefficent = 0.1f;
 
     static constexpr uint16_t speed_coefficent = 20;
@@ -109,7 +109,7 @@ private:
     PerlinField m_grid;
     uint16_t m_cell_size;
 
-    void updateParticles(float dt)
+    inline void updateParticles(float dt) // very small function might be good for inline
     {
         for (Particle &particle : m_particles)
         {
@@ -219,7 +219,7 @@ private:
         }
     }
 
-    void updateHistory()
+    inline void updateHistory() // very small function might be good for inline
     {
         for (Particle &particle : m_particles)
         {

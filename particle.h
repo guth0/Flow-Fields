@@ -76,7 +76,7 @@ public:
         acceleration += a;
     }
 
-    void setVelocity(sf::Vector2f v, float dt)
+    inline void setVelocity(sf::Vector2f v, float dt)
     {
         position_last = position - (v * dt);
     }
@@ -89,7 +89,7 @@ public:
         position_last = pos;
     }
 
-    void addVelocity(sf::Vector2f v, float dt)
+    inline void addVelocity(sf::Vector2f v, float dt)
     {
         position_last -= v * dt;
     }
