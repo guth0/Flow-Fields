@@ -19,6 +19,11 @@ public:
         return m_particles.emplace_back(position);
     }
 
+    inline void reserveParticleSpace(uint16_t num_elements)
+    {
+        m_particles.reserve(num_elements);
+    }
+
     void update()
     {
 

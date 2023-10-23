@@ -1,5 +1,5 @@
 // TODO:
-//  remove substeps
+//  use GLM??? (Math lib)
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -32,6 +32,8 @@ int main()
 
     constexpr uint16_t field_seed = 11242; // up to 65,535
 
+    constexpr uint16_t num_particles = 1000;
+
     // constexpr uint8_t field_refresh_seconds = 3;
     // constexpr uint8_t substep_count = 1;
 
@@ -44,16 +46,16 @@ int main()
     system.setSimulationUpdateRate(frame_rate);
 
     system.setStandardRadius(standard_radius);
-
     system.setWorldSize(window_resolution);
 
     system.resizeGrid(field_width, field_height, flow_cell_size);
-
     system.generateField();
+
+    system.reserveParticleSpace(num_particles); // pre-allocate memory so spawning takes less time
     //\\// Setup system parameters //\\//
 
     //\\// Spawner //\\//
-    Spawner spawner(system, window_resolution);
+    Spawner spawner(system, window_resolution, num_particles);
 
     spawner.spawnParticles();
     //\\// Spawner //\\//
