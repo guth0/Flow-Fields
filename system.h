@@ -6,7 +6,8 @@
 class ParticleSystem
 {
 public:
-    static sf::Vector2i m_world_size;
+    sf::Vector2i m_world_size;
+    uint8_t standard_radius;
 
     ParticleSystem(uint16_t seed_)
         : m_grid{seed_}
@@ -100,8 +101,6 @@ public:
 private:
     sf::Vector2f m_center;
     std::vector<Particle> m_particles;
-
-    static uint8_t standard_radius;
 
     static constexpr float rotation_coefficent = 0.1f;
 

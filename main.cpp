@@ -27,8 +27,8 @@ int main()
     constexpr uint8_t flow_cell_size = 50; // in px
     constexpr uint16_t standard_radius = 1;
 
-    const uint16_t field_width = floor(window_resolution.x / flow_cell_size);
-    const uint16_t field_height = floor(window_resolution.y / flow_cell_size);
+    const uint16_t field_width = std::floor(window_resolution.x / flow_cell_size);
+    const uint16_t field_height = std::floor(window_resolution.y / flow_cell_size);
 
     constexpr uint16_t field_seed = 11242; // up to 65,535
 
@@ -64,14 +64,13 @@ int main()
 
     sf::Clock clock;
 
-    sf::Clock timer;
-    uint32_t fps_total;
-    uint16_t frames = 0;
-    constexpr uint8_t fps_frames = 30;
+    // sf::Clock timer;
+    // uint32_t fps_total;
+    // uint16_t frames = 0;
+    // constexpr uint8_t fps_frames = 30;
 
     while (window.isOpen())
     {
-        frames++;
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -85,17 +84,21 @@ int main()
         }
 
         //\\// handle FPS //\\//
-        fps_total += 1 / timer.restart().asSeconds();
 
-        if (frames >= fps_frames)
-        {
-            uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
+        // frames++;
 
-            std::cout << "FPS: " << avg_fps << std::endl;
+        // fps_total += 1 / timer.restart().asSeconds();
 
-            fps_total = 0;
-            frames = 0;
-        }
+        // if (frames >= fps_frames)
+        // {
+        //     uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
+
+        //     std::cout << "FPS: " << avg_fps << std::endl;
+
+        //     fps_total = 0;
+        //     frames = 0;
+        // }
+
         //\\// handle FPS //\\//
 
         window.clear(background_color);
