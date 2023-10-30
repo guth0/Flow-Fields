@@ -19,7 +19,7 @@ int main()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 1;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
-    constexpr uint32_t frame_rate = 60;
+    constexpr uint8_t frame_rate = 60;
     window.setFramerateLimit(frame_rate);
     //\\// Set up window //\\//
 

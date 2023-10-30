@@ -9,13 +9,13 @@ public:
     uint16_t width;
     uint16_t height;
 
-    PerlinField(uint16_t seed_)
+    PerlinField(const uint16_t &seed_)
     {
         seed = seed_;
         perlin = siv::PerlinNoise{seed_};
     }
 
-    void setSize(uint16_t w, uint16_t h)
+    void setSize(const uint16_t &w, const uint16_t &h)
     {
         width = w;
         height = h;

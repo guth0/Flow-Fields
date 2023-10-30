@@ -15,12 +15,12 @@ public:
         srand(seed_);
     }
 
-    inline Particle &addParticle(sf::Vector2f position)
+    inline Particle &addParticle(const sf::Vector2f &position)
     {
         return m_particles.emplace_back(position);
     }
 
-    inline void reserveParticleSpace(uint16_t num_elements)
+    inline void reserveParticleSpace(const uint16_t &num_elements)
     {
         m_particles.reserve(num_elements);
     }
@@ -47,33 +47,33 @@ public:
         applyBoundsSemiRand(respawn_distance);
     }
 
-    void setStandardRadius(uint8_t radius)
+    void setStandardRadius(const uint8_t &radius)
     {
         standard_radius = radius;
     }
 
-    void setSimulationUpdateRate(uint32_t rate)
+    void setSimulationUpdateRate(const uint32_t &rate)
     {
         m_frame_dt = 1.0f / static_cast<float>(rate);
     }
 
-    void resizeGrid(uint16_t height, uint16_t width, uint16_t cell_size)
+    void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
     {
         m_grid.setSize(width + 2, height + 2); // add buffers on each side
         m_cell_size = cell_size;
     }
 
-    void setCenter(sf::Vector2f window_resolution)
+    void setCenter(const sf::Vector2f &window_resolution)
     {
         m_center = window_resolution * .5f;
     }
 
-    void setWorldSize(sf::Vector2i size)
+    void setWorldSize(const sf::Vector2i &size)
     {
         m_world_size = size;
     }
 
-    void setParticleVelocity(Particle &particle, sf::Vector2f v)
+    void setParticleVelocity(Particle &particle, const sf::Vector2f &v)
     {
         particle.setVelocity(v, m_frame_dt);
     }
@@ -113,7 +113,7 @@ private:
     PerlinField m_grid;
     uint16_t m_cell_size;
 
-    inline void updateParticles(float dt) // very small function might be good for inline
+    inline void updateParticles(const float &dt) // very small function might be good for inline
     {
         for (Particle &particle : m_particles)
         {
@@ -167,7 +167,7 @@ private:
         }
     }
 
-    void applyBoundsSemiRand(uint8_t dist)
+    void applyBoundsSemiRand(const uint8_t &dist)
     {
         int8_t offset;
 
@@ -196,7 +196,7 @@ private:
         }
     }
 
-    void applyGrid(float dt, float t)
+    void applyGrid(const float &dt, const float &t)
     {
         for (Particle &particle : m_particles)
         {

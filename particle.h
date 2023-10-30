@@ -22,7 +22,7 @@ public:
         history.push_front(position);
     }
 
-    void update(float dt)
+    void update(const float &dt)
     {
         // Compute how much particle moved
         const sf::Vector2f displacement = position - position_last;
@@ -71,17 +71,17 @@ public:
         history.clear();
     }
 
-    void accelerate(sf::Vector2f a)
+    void accelerate(const sf::Vector2f &a)
     {
         acceleration += a;
     }
 
-    inline void setVelocity(sf::Vector2f v, float dt)
+    inline void setVelocity(const sf::Vector2f &v, const float &dt)
     {
         position_last = position - (v * dt);
     }
 
-    void ratioSetVelocity(sf::Vector2f v, float dt, float ratio)
+    void ratioSetVelocity(const sf::Vector2f &v, const float &dt, const float &ratio)
     {
         sf::Vector2f pos = ((position - position_last) * (1.0f - ratio) * dt);
         pos += (position - (v * dt)) * ratio;
@@ -89,17 +89,17 @@ public:
         position_last = pos;
     }
 
-    inline void addVelocity(sf::Vector2f v, float dt)
+    inline void addVelocity(const sf::Vector2f &v, const float &dt)
     {
         position_last -= v * dt;
     }
 
-    void slowDown(float ratio)
+    void slowDown(const float &ratio)
     {
         position_last = position_last + ratio * (position - position_last);
     }
 
-    void setPosition(float x, float y)
+    void setPosition(const float &x, const float &y)
     {
         sf::Vector2f position_ = sf::Vector2f{x, y};
         position_last = position_ - (position - position_last); // Keep momentum
@@ -107,7 +107,7 @@ public:
         forceUpdateHistory();
     }
 
-    [[nodiscard]] sf::Vector2f getVelocity(float dt) const
+    [[nodiscard]] sf::Vector2f getVelocity(const float &dt) const
     {
         return (position - position_last) / dt;
     }
