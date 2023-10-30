@@ -9,7 +9,7 @@ public:
     sf::Vector2i m_world_size;
     uint8_t standard_radius;
 
-    ParticleSystem(uint16_t seed_)
+    ParticleSystem(const uint_fast32_t &seed_)
         : m_grid{seed_}
     {
         srand(seed_);

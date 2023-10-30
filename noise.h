@@ -9,7 +9,7 @@ public:
     uint16_t width;
     uint16_t height;
 
-    PerlinField(const uint16_t &seed_)
+    PerlinField(const uint_fast32_t &seed_)
     {
         seed = seed_;
         perlin = siv::PerlinNoise{seed_};
