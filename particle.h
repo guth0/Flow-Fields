@@ -9,8 +9,8 @@ public:
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
 
-    static constexpr uint8_t history_frames_between = 2;        // no effect on performnace (higher count = longer & laggier)
-    uint8_t frames_since_last_history = history_frames_between; // must to start above history_frames_between
+    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
+    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
     static constexpr uint8_t max_history_length = 10;
     std::deque<sf::Vector2f> history;
 

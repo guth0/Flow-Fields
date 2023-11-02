@@ -17,7 +17,7 @@ public:
         settings.antialiasingLevel = 1;
         window.create(sf::VideoMode(window_width, window_height), "Flow Curve", sf::Style::Default, settings);
 
-        static constexpr uint8_t frame_rate = 60;
+        static constexpr uint8_t frame_rate = 130; // MacBook pro reaches 120hz with "ProMotion"
 
         window.setFramerateLimit(frame_rate); // 60fps max
         //\\// Set up window //\\//
@@ -55,18 +55,16 @@ public:
         //\\// Spawner //\\//
 
         Renderer renderer{window};
-
-        sf::Clock clock;
     }
 
     void run()
     {
-        sf::Clock clock;
-
-        // sf::Clock timer;
-        // uint32_t fps_total;
-        // uint16_t frames = 0;
-        // constexpr uint8_t fps_frames = 30;
+        // \\// handle FPS //\\//
+        sf::Clock timer;
+        uint32_t fps_total;
+        uint16_t frames = 0;
+        constexpr uint8_t fps_frames = 30;
+        // \\// handle FPS //\\//
 
         while (window.isOpen())
         {
@@ -82,23 +80,23 @@ public:
                 }
             }
 
-            //\\// handle FPS //\\//
+            // \\// handle FPS //\\//
 
-            // frames++;
+            frames++;
 
-            // fps_total += 1 / timer.restart().asSeconds();
+            fps_total += 1 / timer.restart().asSeconds();
 
-            // if (frames >= fps_frames)
-            // {
-            //     uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
+            if (frames >= fps_frames)
+            {
+                uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
 
-            //     std::cout << "FPS: " << avg_fps << std::endl;
+                std::cout << "FPS: " << avg_fps << std::endl;
 
-            //     fps_total = 0;
-            //     frames = 0;
-            // }
+                fps_total = 0;
+                frames = 0;
+            }
 
-            //\\// handle FPS //\\//
+            // \\// handle FPS //\\//
 
             window.clear(background_color);
             system.update();

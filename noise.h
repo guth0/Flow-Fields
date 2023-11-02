@@ -11,7 +11,7 @@ public:
 
     PerlinField(const uint_fast32_t &seed_)
     {
-        seed = seed_;
+        // seed = seed_;
         perlin = siv::PerlinNoise{seed_};
     }
 
@@ -29,13 +29,14 @@ public:
         {
             for (int y = 0; y < height; y++)
             {
-                data[(x * height) + y] = perlin.octave2D_01((x * 3.0f), (y * 3.0f), ocateves);
+                data[(x * height) + y] = perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
             }
         }
     }
 
 private:
-    siv::PerlinNoise::seed_type seed;
+    // siv::PerlinNoise::seed_type seed;
     siv::PerlinNoise perlin;
-    static constexpr uint8_t ocateves = 3;
+    static constexpr uint8_t field_intensitiy = 10;
+    static constexpr uint8_t octaves = 3;
 };
