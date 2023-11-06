@@ -54,16 +54,15 @@ public:
         spawner.spawnParticles();
         //\\// Spawner //\\//
 
-        Renderer renderer{window};
+        Renderer renderer = Renderer(window, window_resolution);
     }
 
     void run()
     {
         // \\// handle FPS //\\//
         sf::Clock timer;
-        uint32_t fps_total;
         uint16_t frames = 0;
-        constexpr uint8_t fps_frames = 30;
+        constexpr uint16_t fps_frames = 1000;
         // \\// handle FPS //\\//
 
         while (window.isOpen())
@@ -84,15 +83,12 @@ public:
 
             frames++;
 
-            fps_total += 1 / timer.restart().asSeconds();
-
             if (frames >= fps_frames)
             {
-                uint16_t avg_fps = static_cast<uint16_t>(fps_total / fps_frames);
+                float avg_fps = (1 / timer.restart().asSeconds()) * fps_frames;
 
                 std::cout << "FPS: " << avg_fps << std::endl;
 
-                fps_total = 0;
                 frames = 0;
             }
 
@@ -100,7 +96,9 @@ public:
 
             window.clear(background_color);
             system.update();
-            renderer.render(system);
+
+            std::vector<Particle> particles = system.getParticles();
+            renderer.render(particles);
             window.display();
         }
     }
@@ -114,5 +112,5 @@ private:
     sf::RenderWindow window;
 
     ParticleSystem system;
-    Renderer renderer{window};
+    Renderer renderer{window, window_resolution};
 };

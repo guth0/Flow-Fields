@@ -88,7 +88,7 @@ public:
         return m_particles;
     }
 
-    [[nodiscard]] uint64_t getParticleCount() const
+    [[nodiscard]] const uint64_t getParticleCount() const
     {
         return m_particles.size();
     }

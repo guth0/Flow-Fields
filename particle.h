@@ -14,7 +14,7 @@ public:
     static constexpr uint8_t max_history_length = 10;
     std::deque<sf::Vector2f> history;
 
-    sf::Color color = sf::Color::Red;
+    sf::Color color; // = sf::Color::Red
 
     Particle(sf::Vector2f position_) // constructor
         : position{position_}, position_last{position_}, acceleration{0.0f, 0.0f}
