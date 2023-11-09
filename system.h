@@ -3,6 +3,8 @@
 #include "particle.h"
 #include "noise.h"
 
+#define PARTICLE_CAP 2000
+
 class ParticleSystem
 {
 public:
@@ -17,12 +19,11 @@ public:
 
     inline Particle &addParticle(const sf::Vector2f &position)
     {
-        return m_particles.emplace_back(position);
-    }
+        m_particles[m_particle_count] = position;
 
-    inline void reserveParticleSpace(const uint16_t &num_elements)
-    {
-        m_particles.reserve(num_elements);
+        m_particle_count += 1;
+
+        return m_particles[m_particle_count - 1]; // slow, I think ++m_par_count would work but not sure
     }
 
     void update()
@@ -83,14 +84,14 @@ public:
         m_grid.generateField();
     }
 
-    [[nodiscard]] const std::vector<Particle> &getParticles() const
+    [[nodiscard]] const std::array<Particle, PARTICLE_CAP> &getParticles() const
     {
         return m_particles;
     }
 
-    [[nodiscard]] const uint64_t getParticleCount() const
+    [[nodiscard]] const uint16_t getParticleCount() const
     {
-        return m_particles.size();
+        return m_particle_count;
     }
 
     [[nodiscard]] float getTime() const
@@ -100,7 +101,8 @@ public:
 
 private:
     sf::Vector2f m_center;
-    std::vector<Particle> m_particles;
+    std::array<Particle, PARTICLE_CAP> m_particles;
+    uint16_t m_particle_count = 0;
 
     static constexpr float rotation_coefficent = 0.1f;
 

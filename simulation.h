@@ -31,7 +31,7 @@ public:
 
         constexpr uint_fast32_t field_seed = 11242; // up to 4,294,967,296
 
-        constexpr uint16_t num_particles = 1000;
+        constexpr uint16_t num_particles = PARTICLE_CAP;
         //\\// Set simulation attributes //\\//
 
         //\\// Setup system parameters //\\//
@@ -45,7 +45,7 @@ public:
         system.resizeGrid(field_width, field_height, flow_cell_size);
         system.generateField();
 
-        system.reserveParticleSpace(num_particles); // pre-allocate memory so spawning takes less time
+        // system.reserveParticleSpace(num_particles); // pre-allocate memory so spawning takes less time
         //\\// Setup system parameters //\\//
 
         //\\// Spawner //\\//
@@ -62,7 +62,7 @@ public:
         // \\// handle FPS //\\//
         sf::Clock timer;
         uint16_t frames = 0;
-        constexpr uint16_t fps_frames = 1000;
+        constexpr uint16_t fps_frames = 20;
         // \\// handle FPS //\\//
 
         while (window.isOpen())
@@ -97,7 +97,7 @@ public:
             window.clear(background_color);
             system.update();
 
-            std::vector<Particle> particles = system.getParticles();
+            std::array<Particle, PARTICLE_CAP> particles = system.getParticles();
             renderer.render(particles);
             window.display();
         }

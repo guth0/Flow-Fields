@@ -10,7 +10,7 @@ public:
     {
     }
 
-    void render(std::vector<Particle> &particles) const
+    void render(std::array<Particle, PARTICLE_CAP> &particles) const
     {
 
         //\\// Render objects //\\//

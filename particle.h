@@ -16,6 +16,8 @@ public:
 
     sf::Color color; // = sf::Color::Red
 
+    Particle() = default;
+
     Particle(sf::Vector2f position_) // constructor
         : position{position_}, position_last{position_}, acceleration{0.0f, 0.0f}
     {
