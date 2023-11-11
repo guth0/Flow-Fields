@@ -3,25 +3,26 @@
 #include "particle.h"
 #include "noise.h"
 
+#define PARTICLE_CAP 3400
+
 class ParticleSystem
 {
 public:
-    static sf::Vector2i m_world_size;
+    sf::Vector2i m_world_size;
+    uint8_t standard_radius;
 
-    ParticleSystem(uint16_t seed_)
-        : m_grid{seed_}
+    ParticleSystem(const uint_fast32_t &seed_)
+        : m_grid{seed_}, m_seed{seed_}
     {
-        srand(seed_);
     }
 
-    inline Particle &addParticle(sf::Vector2f position)
+    inline Particle &addParticle(const sf::Vector2f &position)
     {
-        return m_particles.emplace_back(position);
-    }
+        m_particles[m_particle_count] = position;
 
-    inline void reserveParticleSpace(uint16_t num_elements)
-    {
-        m_particles.reserve(num_elements);
+        m_particle_count += 1;
+
+        return m_particles[m_particle_count - 1]; // slow, I think ++m_par_count would work but not sure
     }
 
     void update()
@@ -33,7 +34,15 @@ public:
 
         updateParticles(m_frame_dt);
 
-        updateHistory();
+        if (frames_since_last_history >= history_frames_between)
+        {
+            updateHistory();
+            frames_since_last_history = 0;
+        }
+        else
+        {
+            frames_since_last_history++;
+        }
 
         //\\// No randomness in respawn //\\//
         // applyBounds(); // particles will spawn exactly across from where they exected the bounds
@@ -46,33 +55,33 @@ public:
         applyBoundsSemiRand(respawn_distance);
     }
 
-    void setStandardRadius(uint8_t radius)
+    void setStandardRadius(const uint8_t &radius)
     {
         standard_radius = radius;
     }
 
-    void setSimulationUpdateRate(uint32_t rate)
+    void setSimulationUpdateRate(const uint32_t &rate)
     {
         m_frame_dt = 1.0f / static_cast<float>(rate);
     }
 
-    void resizeGrid(uint16_t height, uint16_t width, uint16_t cell_size)
+    void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
     {
         m_grid.setSize(width + 2, height + 2); // add buffers on each side
         m_cell_size = cell_size;
     }
 
-    void setCenter(sf::Vector2f window_resolution)
+    void setCenter(const sf::Vector2f &window_resolution)
     {
         m_center = window_resolution * .5f;
     }
 
-    void setWorldSize(sf::Vector2i size)
+    void setWorldSize(const sf::Vector2i &size)
     {
         m_world_size = size;
     }
 
-    void setParticleVelocity(Particle &particle, sf::Vector2f v)
+    void setParticleVelocity(Particle &particle, const sf::Vector2f &v)
     {
         particle.setVelocity(v, m_frame_dt);
     }
@@ -82,14 +91,14 @@ public:
         m_grid.generateField();
     }
 
-    [[nodiscard]] const std::vector<Particle> &getParticles() const
+    [[nodiscard]] const std::array<Particle, PARTICLE_CAP> &getParticles() const
     {
         return m_particles;
     }
 
-    [[nodiscard]] uint64_t getParticleCount() const
+    [[nodiscard]] const uint16_t getParticleCount() const
     {
-        return m_particles.size();
+        return m_particle_count;
     }
 
     [[nodiscard]] float getTime() const
@@ -99,9 +108,8 @@ public:
 
 private:
     sf::Vector2f m_center;
-    std::vector<Particle> m_particles;
-
-    static uint8_t standard_radius;
+    std::array<Particle, PARTICLE_CAP> m_particles;
+    uint16_t m_particle_count = 0;
 
     static constexpr float rotation_coefficent = 0.1f;
 
@@ -113,8 +121,12 @@ private:
 
     PerlinField m_grid;
     uint16_t m_cell_size;
+    const uint_fast32_t &m_seed;
 
-    inline void updateParticles(float dt) // very small function might be good for inline
+    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
+    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
+
+    inline void updateParticles(const float &dt) // very small function might be good for inline
     {
         for (Particle &particle : m_particles)
         {
@@ -168,9 +180,10 @@ private:
         }
     }
 
-    void applyBoundsSemiRand(uint8_t dist)
+    void applyBoundsSemiRand(const uint8_t &dist)
     {
-        int8_t offset;
+        int_fast8_t offset;
+        srand(m_seed + (static_cast<int>(m_time * 100)) % 10); // add time for more randomness between frames
 
         for (Particle &particle : m_particles)
         {
@@ -197,13 +210,13 @@ private:
         }
     }
 
-    void applyGrid(float dt, float t)
+    void applyGrid(const float &dt, const float &t)
     {
         for (Particle &particle : m_particles)
         {
 
-            if (particle.position.x > standard_radius && particle.position.x < m_world_size.x &&
-                particle.position.y > standard_radius && particle.position.y < m_world_size.y)
+            if (!(particle.position.x <= 0 || particle.position.x >= m_world_size.x ||
+                  particle.position.y <= 0 || particle.position.y >= m_world_size.y)) // Negatives are faster than positives
             {
 
                 // get position of cell that particle is in
