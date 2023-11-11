@@ -35,7 +35,15 @@ public:
 
         updateParticles(m_frame_dt);
 
-        updateHistory();
+        if (frames_since_last_history >= history_frames_between)
+        {
+            updateHistory();
+            frames_since_last_history = 0;
+        }
+        else
+        {
+            frames_since_last_history++;
+        }
 
         //\\// No randomness in respawn //\\//
         // applyBounds(); // particles will spawn exactly across from where they exected the bounds
@@ -114,6 +122,9 @@ private:
 
     PerlinField m_grid;
     uint16_t m_cell_size;
+
+    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
+    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
 
     inline void updateParticles(const float &dt) // very small function might be good for inline
     {

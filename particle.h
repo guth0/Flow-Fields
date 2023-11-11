@@ -9,7 +9,7 @@ public:
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
 
-    std::deque<sf::Vector2f> history;
+    std::deque<sf::Vertex> history;
 
     sf::Color color; // = sf::Color::Red
 
@@ -36,20 +36,12 @@ public:
 
     void updateHistory()
     {
-        if (frames_since_last_history >= history_frames_between)
-        {
-            history.push_front(position);
+        history.push_front(position);
 
-            // Limit the history length to control the tail length
-            while (history.size() > max_history_length)
-            {
-                history.pop_back();
-            }
-            frames_since_last_history = 0;
-        }
-        else
+        // Limit the history length to control the tail length
+        while (history.size() > max_history_length)
         {
-            frames_since_last_history++;
+            history.pop_back();
         }
     }
 
@@ -62,7 +54,6 @@ public:
         {
             history.pop_back();
         }
-        frames_since_last_history = 0;
     }
 
     void clearHistory()
@@ -118,7 +109,5 @@ public:
     }
 
 private:
-    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
-    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
     static constexpr uint8_t max_history_length = 10;
 };

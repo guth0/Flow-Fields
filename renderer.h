@@ -38,13 +38,13 @@ public:
             {
                 for (int i = 0; i < history_size - 1; ++i)
                 {
-                    sf::Vector2f pos = particle.history[i];
+                    sf::Vector2f pos = particle.history[i].position;
                     if (pos.x > 1 && pos.x < m_world_size.x - 1 &&
                         pos.y > 1 && pos.y < m_world_size.y - 1)
                     {
 
-                        line[0] = sf::Vertex(particle.history[i]);
-                        line[1] = sf::Vertex(particle.history[i + 1]);
+                        line[0] = particle.history[i];
+                        line[1] = particle.history[i + 1];
 
                         color = particle.color;
                         line[0].color = color;
