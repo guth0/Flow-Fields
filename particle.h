@@ -9,9 +9,6 @@ public:
     sf::Vector2f position_last;
     sf::Vector2f acceleration;
 
-    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
-    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
-    static constexpr uint8_t max_history_length = 10;
     std::deque<sf::Vector2f> history;
 
     sf::Color color; // = sf::Color::Red
@@ -119,4 +116,9 @@ public:
         sf::Vector2f v = position - position_last;
         return sqrt(v.x * v.x + v.y * v.y);
     }
+
+private:
+    static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
+    uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
+    static constexpr uint8_t max_history_length = 10;
 };

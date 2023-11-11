@@ -62,7 +62,7 @@ public:
         // \\// handle FPS //\\//
         sf::Clock timer;
         uint16_t frames = 0;
-        constexpr uint16_t fps_frames = 20;
+        constexpr uint16_t fps_frames = 240;
         // \\// handle FPS //\\//
 
         while (window.isOpen())

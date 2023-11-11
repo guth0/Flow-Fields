@@ -5,14 +5,20 @@
 class PerlinField
 {
 public:
+    float *data;
+
     std::vector<float> data;
     uint16_t width;
     uint16_t height;
 
     PerlinField(const uint_fast32_t &seed_)
     {
-        // seed = seed_;
         perlin = siv::PerlinNoise{seed_};
+    }
+
+    ~PerlinField() // destructor, don't explicitily call, it will delete itself
+    {
+        delete[] data;
     }
 
     void setSize(const uint16_t &w, const uint16_t &h)
@@ -20,7 +26,7 @@ public:
         width = w;
         height = h;
 
-        data.resize(w * h);
+        data = new float[w * h];
     }
 
     void generateField()
@@ -35,7 +41,6 @@ public:
     }
 
 private:
-    // siv::PerlinNoise::seed_type seed;
     siv::PerlinNoise perlin;
     static constexpr uint8_t field_intensitiy = 10;
     static constexpr uint8_t octaves = 3;
