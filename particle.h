@@ -91,7 +91,7 @@ public:
 
     void setPosition(const float &x, const float &y)
     {
-        sf::Vector2f position_ = sf::Vector2f{x, y};
+        const sf::Vector2f position_ = sf::Vector2f{x, y};
         position_last = position_ - (position - position_last); // Keep momentum
         position = position_;
         forceUpdateHistory();

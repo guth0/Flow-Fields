@@ -3,7 +3,7 @@
 #include "particle.h"
 #include "noise.h"
 
-#define PARTICLE_CAP 2000
+#define PARTICLE_CAP 3400
 
 class ParticleSystem
 {
@@ -12,9 +12,8 @@ public:
     uint8_t standard_radius;
 
     ParticleSystem(const uint_fast32_t &seed_)
-        : m_grid{seed_}
+        : m_grid{seed_}, m_seed{seed_}
     {
-        srand(seed_);
     }
 
     inline Particle &addParticle(const sf::Vector2f &position)
@@ -122,6 +121,7 @@ private:
 
     PerlinField m_grid;
     uint16_t m_cell_size;
+    const uint_fast32_t &m_seed;
 
     static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
     uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
@@ -182,7 +182,8 @@ private:
 
     void applyBoundsSemiRand(const uint8_t &dist)
     {
-        int8_t offset;
+        int_fast8_t offset;
+        srand(m_seed + (static_cast<int>(m_time * 100)) % 10); // add time for more randomness between frames
 
         for (Particle &particle : m_particles)
         {
@@ -214,8 +215,8 @@ private:
         for (Particle &particle : m_particles)
         {
 
-            if (particle.position.x > standard_radius && particle.position.x < m_world_size.x &&
-                particle.position.y > standard_radius && particle.position.y < m_world_size.y)
+            if (!(particle.position.x <= 0 || particle.position.x >= m_world_size.x ||
+                  particle.position.y <= 0 || particle.position.y >= m_world_size.y)) // Negatives are faster than positives
             {
 
                 // get position of cell that particle is in
