@@ -18,9 +18,17 @@ public:
         // circle.setPointCount(32);
         // circle.setOrigin(1.0f, 1.0f);
         // const std::vector<Particle> &particles = system.getParticles();
+        //\\// Render objects //\\//
 
-        sf::Color color;
-        sf::Vertex line[2];
+        // sf::VertexArray liney(sf::LineStrip, 4); // Two points for a line
+
+        // // Set the position and color of the points
+        // liney[0].position = sf::Vector2f(100.f, 100.f);
+        // liney[1].position = sf::Vector2f(200.f, 200.f);
+        // liney[2].position = sf::Vector2f(350.f, 300.f);
+        // liney[3].position = sf::Vector2f(400.f, 400.f);
+
+        // m_target.draw(liney);
 
         for (const Particle &particle : particles)
         {
@@ -32,27 +40,40 @@ public:
             //\\// Render Point //\\//
 
             //\\// Render Tail //\\//
+            // const std::deque<sf::Vertex> *const history = &particle.history;
             uint8_t history_size = particle.history.size();
+            uint8_t offset = 0;
 
             if (history_size > 1)
             {
-                for (int i = 0; i < history_size - 1; ++i)
+                for (int i = 0; i < history_size; i++)
                 {
                     sf::Vector2f pos = particle.history[i].position;
-                    if (pos.x > 1 && pos.x < m_world_size.x - 1 &&
-                        pos.y > 1 && pos.y < m_world_size.y - 1)
+
+                    if (pos.x <= 2 || pos.x >= m_world_size.x - 2 || pos.y <= 2 || pos.y >= m_world_size.y - 2)
                     {
+                        sf::VertexArray line(sf::LineStrip, i - offset);
 
-                        line[0] = particle.history[i];
-                        line[1] = particle.history[i + 1];
+                        for (int j = offset; j < i; j++)
+                        {
+                            line[j - offset] = particle.history[j];
+                        }
 
-                        color = particle.color;
-                        line[0].color = color;
-                        line[1].color = color;
+                        m_target.draw(line);
 
-                        m_target.draw(line, 2, sf::Lines);
+                        offset = i + 1;
                     }
                 }
+
+                sf::VertexArray line(sf::LineStrip, history_size - offset);
+
+                for (int i = offset; i < history_size; i++)
+                {
+                    const uint8_t index = i - offset;
+                    line[index] = particle.history[i];
+                }
+
+                m_target.draw(line);
             }
             //\\// Render Tail //\\//
         }

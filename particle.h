@@ -36,7 +36,7 @@ public:
 
     void updateHistory()
     {
-        history.push_front(position);
+        history.push_front(sf::Vertex{position, color});
 
         // Limit the history length to control the tail length
         while (history.size() > max_history_length)
