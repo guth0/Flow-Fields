@@ -7,7 +7,6 @@ class PerlinField
 public:
     float *data;
 
-    std::vector<float> data;
     uint16_t width;
     uint16_t height;
 
