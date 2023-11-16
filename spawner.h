@@ -34,5 +34,5 @@ private:
     uint16_t num_particles = 1000;
     static constexpr uint8_t seed = 131; // arbitrary (makes the simulation deterministic)
     static constexpr uint8_t alpha = static_cast<uint8_t>(transparency * 255);
-    const sf::Color color = sf::Color{110, 110, 255, alpha};
+    const sf::Color color = sf::Color{200, 50, 50, alpha};
 };

@@ -25,24 +25,19 @@ public:
         return m_particles[m_particle_count - 1]; // slow, I think ++m_par_count would work but not sure
     }
 
+    // 471 μs (with "acc * dt2")
     void update()
     {
 
-        // sf::Clock timer;
-
         m_time += m_frame_dt;
 
-        // timer.restart();
+        // sf::Clock timer;
 
-        applyGrid(m_frame_dt, m_time * rotation_coefficent);
+        applyGrid(m_frame_dt, (m_time * rotation_coefficent)); // ~65%
 
-        // std::cout << 'A' << timer.restart().asMicroseconds() << '-';
+        updateParticles(m_frame_dt); // ~21%
 
-        updateParticles(m_frame_dt);
-
-        // std::cout << 'U' << timer.restart().asMicroseconds() << '-';
-
-        if (frames_since_last_history >= history_frames_between)
+        if (frames_since_last_history >= history_frames_between) // ~11%
         {
             updateHistory();
             frames_since_last_history = 0;
@@ -52,8 +47,6 @@ public:
             frames_since_last_history++;
         }
 
-        // std::cout << 'H' << timer.restart().asMicroseconds() << '-';
-
         //\\// No randomness in respawn //\\//
         // applyBounds(); // particles will spawn exactly across from where they exected the bounds
 
@@ -61,9 +54,7 @@ public:
         // applyBoundsRand();
         //\\// small variation when on respawning //\\//
 
-        applyBoundsSemiRand(respawn_distance);
-
-        // std::cout << 'B' << timer.restart().asMicroseconds() << std::endl;
+        applyBoundsSemiRand(respawn_distance); // ~3%
     }
 
     void setStandardRadius(const uint8_t &radius)
@@ -122,9 +113,9 @@ private:
     std::array<Particle, PARTICLE_CAP> m_particles;
     uint16_t m_particle_count = 0;
 
-    static constexpr float rotation_coefficent = 0.1f;
+    static constexpr float rotation_coefficent = 0.15f;
 
-    static constexpr uint16_t speed_coefficent = 20;
+    static constexpr float speed_coefficent = 20.0f;
     static constexpr float slow_ratio = 0.1f; // slow down ratio%
 
     float m_time = 0.0f;
@@ -141,9 +132,11 @@ private:
 
     inline void updateParticles(const float &dt) // very small function might be good for inline
     {
+        const float dt2 = dt * dt;
+
         for (Particle &particle : m_particles)
         {
-            particle.update(dt);
+            particle.update(dt2);
         }
     }
 
@@ -172,6 +165,8 @@ private:
 
     void applyBoundsRand()
     {
+        srand(m_seed + (static_cast<int>(m_time * 100)) % 10); // add time for more randomness between frames
+
         for (Particle &particle : m_particles)
         {
             if (particle.position.x < standard_radius)
@@ -223,26 +218,34 @@ private:
         }
     }
 
+    // 310 μs
     void applyGrid(const float &dt, const float &t)
     {
+
         for (Particle &particle : m_particles)
         {
 
-            if (!(particle.position.x <= 0 || particle.position.x >= m_world_size.x ||
-                  particle.position.y <= 0 || particle.position.y >= m_world_size.y)) // Negatives are faster than positives
+            if (particle.position.x > 0 && particle.position.x < m_world_size.x &&
+                particle.position.y > 0 && particle.position.y < m_world_size.y)
             {
 
                 // get position of cell that particle is in
                 // the "+1"s are for the buffers of the grid
+                // ~5% of runtime (of this function)
                 uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
-                float x = cos(m_grid.data[cell_position]); // + cos(t);
-                float y = sin(m_grid.data[cell_position]); // + sin(t);
+                // ~17% of runtime
+                float x = cos(m_grid.data[cell_position] + t);
+                float y = sin(m_grid.data[cell_position] + t);
 
+                // ~6% of runtime
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
-                particle.addVelocity(vec * (float)speed_coefficent, dt);
+                // ~36.5% of runtime
+                particle.addVelocity(vec * speed_coefficent, dt);
+
+                // ~35.5% of runtime
                 particle.slowDown(slow_ratio);
 
                 // can use particle.setVelocity aswell
@@ -259,4 +262,4 @@ private:
     }
 };
 
-// 312 - 104 - (200 / 4) - 15
+// 308 - 104 - (200 / 4) - 15

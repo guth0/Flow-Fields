@@ -21,17 +21,18 @@ public:
         history.push_front(position);
     }
 
-    void update(const float &dt)
+    // 91 μs, 52 μs w/o "acceleration * dt2"
+    void update(const float &dt2)
     {
         // Compute how much particle moved
-        const sf::Vector2f displacement = position - position_last;
+        const sf::Vector2f displacement = position - position_last; // ~22%
         // Update pos
 
-        position_last = position;
-        position = position + displacement + acceleration * (dt * dt);
+        position_last = position;                                // ~4%
+        position = position + displacement + acceleration * dt2; // ~66%
 
         // Reset acceleration
-        acceleration = {};
+        acceleration = {}; // ~8%
     }
 
     void updateHistory()

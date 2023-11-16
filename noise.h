@@ -34,13 +34,14 @@ public:
         {
             for (int y = 0; y < height; y++)
             {
-                data[(x * height) + y] = perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
+                data[(x * height) + y] = coefficent * perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
             }
         }
     }
 
 private:
     siv::PerlinNoise perlin;
-    static constexpr uint8_t field_intensitiy = 1;
+    static constexpr uint8_t coefficent = 4;
+    static constexpr float field_intensitiy = 0.5f;
     static constexpr uint8_t octaves = 3;
 };
