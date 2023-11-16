@@ -3,7 +3,7 @@
 #include "particle.h"
 #include "noise.h"
 
-#define PARTICLE_CAP 3400
+#define PARTICLE_CAP 3000
 
 class ParticleSystem
 {
@@ -28,11 +28,19 @@ public:
     void update()
     {
 
+        // sf::Clock timer;
+
         m_time += m_frame_dt;
+
+        // timer.restart();
 
         applyGrid(m_frame_dt, m_time * rotation_coefficent);
 
+        // std::cout << 'A' << timer.restart().asMicroseconds() << '-';
+
         updateParticles(m_frame_dt);
+
+        // std::cout << 'U' << timer.restart().asMicroseconds() << '-';
 
         if (frames_since_last_history >= history_frames_between)
         {
@@ -44,6 +52,8 @@ public:
             frames_since_last_history++;
         }
 
+        // std::cout << 'H' << timer.restart().asMicroseconds() << '-';
+
         //\\// No randomness in respawn //\\//
         // applyBounds(); // particles will spawn exactly across from where they exected the bounds
 
@@ -51,8 +61,9 @@ public:
         // applyBoundsRand();
         //\\// small variation when on respawning //\\//
 
-        constexpr uint8_t respawn_distance = 100;
         applyBoundsSemiRand(respawn_distance);
+
+        // std::cout << 'B' << timer.restart().asMicroseconds() << std::endl;
     }
 
     void setStandardRadius(const uint8_t &radius)
@@ -122,6 +133,8 @@ private:
     PerlinField m_grid;
     uint16_t m_cell_size;
     const uint_fast32_t &m_seed;
+
+    static constexpr uint8_t respawn_distance = 100; // For semirandom respawn
 
     static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
     uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
@@ -223,8 +236,8 @@ private:
                 // the "+1"s are for the buffers of the grid
                 uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
 
-                float x = cos(m_grid.data[cell_position] + t);
-                float y = sin(m_grid.data[cell_position] + t);
+                float x = cos(m_grid.data[cell_position]); // + cos(t);
+                float y = sin(m_grid.data[cell_position]); // + sin(t);
 
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
@@ -245,3 +258,5 @@ private:
         }
     }
 };
+
+// 312 - 104 - (200 / 4) - 15

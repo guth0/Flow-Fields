@@ -85,7 +85,7 @@ public:
 
             if (frames >= fps_frames)
             {
-                float avg_fps = (1 / timer.restart().asSeconds()) * fps_frames;
+                float avg_fps = fps_frames / timer.restart().asSeconds();
 
                 std::cout << "FPS: " << avg_fps << std::endl;
 

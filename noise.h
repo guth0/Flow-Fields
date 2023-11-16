@@ -41,6 +41,6 @@ public:
 
 private:
     siv::PerlinNoise perlin;
-    static constexpr uint8_t field_intensitiy = 5;
+    static constexpr uint8_t field_intensitiy = 1;
     static constexpr uint8_t octaves = 3;
 };
