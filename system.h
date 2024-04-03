@@ -20,14 +20,16 @@ public:
     {
         m_particles[m_particle_count] = position;
 
-        m_particle_count += 1;
-
-        return m_particles[m_particle_count - 1]; // slow, I think ++m_par_count would work but not sure
+        return m_particles[m_particle_count++];
+        // POST-INCREMENT
+        // This is here because the particle that is added is going to be at (n - 1) where n is the NEW number of particles
+        // If I did not post-increment here, I would have to add 1 to n, then find the index at n - 1
+        // this way, it is all done in one step
     }
 
     void update()
     {
-        m_time += .01;
+        m_time += .01; // I think I could convert this to just an INT that represents the number of frames
 
         applyGrid(m_time);
 
@@ -48,8 +50,8 @@ public:
 
         //\\// complete random respawns //\\//
         // applyBoundsRand();
-        //\\// small variation when on respawning //\\//
 
+        //\\// small variation when on respawning //\\//
         applyBoundsSemiRand(respawn_distance);
     }
 

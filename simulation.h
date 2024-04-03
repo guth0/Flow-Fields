@@ -19,7 +19,7 @@ public:
 
         static constexpr uint8_t frame_rate = 130; // MacBook pro reaches 120hz with "ProMotion"
 
-        window.setFramerateLimit(frame_rate); // 60fps max
+        window.setFramerateLimit(frame_rate);
         //\\// Set up window //\\//
 
         //\\// Set simulation attributes //\\//
@@ -62,7 +62,7 @@ public:
         // \\// handle FPS //\\//
         sf::Clock timer;
         uint16_t frames = 0;
-        constexpr uint16_t fps_frames = 240;
+        constexpr uint16_t fps_frames = 240; // This is the number of frames that
         // \\// handle FPS //\\//
 
         while (window.isOpen())
@@ -106,6 +106,7 @@ public:
 private:
     static constexpr uint16_t window_height = 850;
     static constexpr uint16_t window_width = window_height * 1512 / 982;
+    // this magic above number makes sure that the window is the proper ratio for a MAC
     const sf::Color background_color{0, 0, 0, 255};
     const sf::Vector2i window_resolution{window_width, window_height};
 
