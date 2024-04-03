@@ -27,12 +27,11 @@ public:
 
     void update()
     {
+        m_time += .01;
 
-        m_time += m_frame_dt;
+        applyGrid(m_time);
 
-        applyGrid(m_frame_dt, m_time * rotation_coefficent);
-
-        updateParticles(m_frame_dt);
+        updateParticles();
 
         if (frames_since_last_history >= history_frames_between)
         {
@@ -51,7 +50,6 @@ public:
         // applyBoundsRand();
         //\\// small variation when on respawning //\\//
 
-        constexpr uint8_t respawn_distance = 100;
         applyBoundsSemiRand(respawn_distance);
     }
 
@@ -60,10 +58,10 @@ public:
         standard_radius = radius;
     }
 
-    void setSimulationUpdateRate(const uint32_t &rate)
-    {
-        m_frame_dt = 1.0f / static_cast<float>(rate);
-    }
+    // void setSimulationUpdateRate(const uint32_t &rate)
+    // {
+    //     m_frame_dt = 1.0f / static_cast<float>(rate);
+    // }
 
     void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
     {
@@ -83,7 +81,7 @@ public:
 
     void setParticleVelocity(Particle &particle, const sf::Vector2f &v)
     {
-        particle.setVelocity(v, m_frame_dt);
+        particle.setVelocity(v);
     }
 
     void generateField()
@@ -111,26 +109,26 @@ private:
     std::array<Particle, PARTICLE_CAP> m_particles;
     uint16_t m_particle_count = 0;
 
-    static constexpr float rotation_coefficent = 0.1f;
-
-    static constexpr uint16_t speed_coefficent = 20;
+    static constexpr float speed_coefficent = 0.2;
     static constexpr float slow_ratio = 0.1f; // slow down ratio%
 
-    float m_time = 0.0f;
-    float m_frame_dt;
+    unsigned int m_time = 0.0f;
+    // static constexpr uint8_t m_frame_dt = 1;
 
     PerlinField m_grid;
     uint16_t m_cell_size;
     const uint_fast32_t &m_seed;
 
+    static constexpr uint8_t respawn_distance = 100;
+
     static constexpr uint8_t history_frames_between = 3;        // small effect on performnace (higher = longer & laggier lines)
     uint8_t frames_since_last_history = history_frames_between; // must to start at/above history_frames_between
 
-    inline void updateParticles(const float &dt) // very small function might be good for inline
+    inline void updateParticles() // very small function might be good for inline
     {
         for (Particle &particle : m_particles)
         {
-            particle.update(dt);
+            particle.update();
         }
     }
 
@@ -210,7 +208,7 @@ private:
         }
     }
 
-    void applyGrid(const float &dt, const float &t)
+    void applyGrid(const float &t)
     {
         for (Particle &particle : m_particles)
         {
@@ -229,7 +227,7 @@ private:
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
-                particle.addVelocity(vec * (float)speed_coefficent, dt);
+                particle.addVelocity(vec * (float)speed_coefficent);
                 particle.slowDown(slow_ratio);
 
                 // can use particle.setVelocity aswell

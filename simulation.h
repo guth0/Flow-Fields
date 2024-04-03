@@ -37,7 +37,7 @@ public:
         //\\// Setup system parameters //\\//
         // system = ParticleSystem(field_seed);
 
-        system.setSimulationUpdateRate(frame_rate);
+        // system.setSimulationUpdateRate(frame_rate);
 
         system.setStandardRadius(standard_radius);
         system.setWorldSize(window_resolution);

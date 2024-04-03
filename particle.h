@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <deque>
+#include <cmath>
 
 struct Particle
 {
@@ -21,14 +22,14 @@ public:
         history.push_front(position);
     }
 
-    void update(const float &dt)
+    void update()
     {
         // Compute how much particle moved
         const sf::Vector2f displacement = position - position_last;
         // Update pos
 
         position_last = position;
-        position = position + displacement + acceleration * (dt * dt);
+        position = position + displacement + acceleration;
 
         // Reset acceleration
         acceleration = {};
@@ -66,22 +67,22 @@ public:
         acceleration += a;
     }
 
-    inline void setVelocity(const sf::Vector2f &v, const float &dt)
+    inline void setVelocity(const sf::Vector2f &v)
     {
-        position_last = position - (v * dt);
+        position_last = position - v;
     }
 
-    void ratioSetVelocity(const sf::Vector2f &v, const float &dt, const float &ratio)
+    void ratioSetVelocity(const sf::Vector2f &v, const float &ratio)
     {
-        sf::Vector2f pos = ((position - position_last) * (1.0f - ratio) * dt);
-        pos += (position - (v * dt)) * ratio;
+        sf::Vector2f pos = ((position - position_last) * (1.0f - ratio));
+        pos += (position - v) * ratio;
 
         position_last = pos;
     }
 
-    inline void addVelocity(const sf::Vector2f &v, const float &dt)
+    inline void addVelocity(const sf::Vector2f &v)
     {
-        position_last -= v * dt;
+        position_last -= v;
     }
 
     void slowDown(const float &ratio)
@@ -97,15 +98,15 @@ public:
         forceUpdateHistory();
     }
 
-    [[nodiscard]] sf::Vector2f getVelocity(const float &dt) const
+    [[nodiscard]] sf::Vector2f getVelocity() const
     {
-        return (position - position_last) / dt;
+        return (position - position_last);
     }
 
     [[nodiscard]] float getSpeed() const
     {
         sf::Vector2f v = position - position_last;
-        return sqrt(v.x * v.x + v.y * v.y);
+        return std::sqrt(v.x * v.x + v.y * v.y);
     }
 
 private:
