@@ -29,7 +29,7 @@ public:
 
     void update()
     {
-        m_time += .01; // I think I could convert this to just an INT that represents the number of frames
+        m_time += .001; // I think I could convert this to just an INT that represents the number of frames
 
         applyGrid(m_time);
 
@@ -114,7 +114,7 @@ private:
     static constexpr float speed_coefficent = 0.2;
     static constexpr float slow_ratio = 0.1f; // slow down ratio%
 
-    unsigned int m_time = 0.0f;
+    float m_time = 0.0f;
     // static constexpr uint8_t m_frame_dt = 1;
 
     PerlinField m_grid;
