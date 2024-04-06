@@ -10,6 +10,29 @@ public:
     {
     }
 
+    void setNumParticles(uint16_t num)
+    {
+        num_particles = num;
+    }
+
+    // This is a value from 0% to 100%
+    void setTransparency(float t)
+    {
+        alpha = static_cast<uint8_t>(t * 255);
+    }
+
+    void setSeed(uint8_t s)
+    {
+        seed = s;
+    }
+
+    // the alpha value will be set to the object's member variable alpha
+    void setColor(sf::Color c)
+    {
+        c.a = alpha; // change the alpha to the stored alpha
+        color = c;
+    }
+
     void spawnParticles()
     {
         srand(seed);
@@ -30,9 +53,9 @@ public:
 private:
     ParticleSystem &system;
     sf::Vector2i world_size;
-    static constexpr float transparency = 0.75f;
     uint16_t num_particles = 1000;
-    static constexpr uint8_t seed = 131; // arbitrary (makes the simulation deterministic)
-    static constexpr uint8_t alpha = static_cast<uint8_t>(transparency * 255);
-    const sf::Color color = sf::Color{110, 110, 255, alpha};
+
+    uint8_t seed;        // arbitrary (makes the simulation deterministic)
+    uint8_t alpha = 255; // default is full brightness
+    sf::Color color = sf::Color{110, 110, 255, alpha};
 };

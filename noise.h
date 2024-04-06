@@ -5,8 +5,7 @@
 class PerlinField
 {
 public:
-    float *data;
-
+    // float *data;
     uint16_t width;
     uint16_t height;
 
@@ -15,9 +14,19 @@ public:
         perlin = siv::PerlinNoise{seed_};
     }
 
-    ~PerlinField() // destructor, don't explicitily call, it will delete itself
+    // ~PerlinField() // destructor, don't explicitily call, it will delete itself
+    // {
+    //     delete[] data;
+    // }
+
+    void setIntensity(int i)
     {
-        delete[] data;
+        field_intensitiy = i;
+    }
+
+    void setOctaves(int o)
+    {
+        octaves = o;
     }
 
     void setSize(const uint16_t &w, const uint16_t &h)
@@ -25,10 +34,10 @@ public:
         width = w;
         height = h;
 
-        data = new float[w * h];
+        // data = new float[w * h];
     }
 
-    void generateField()
+    void generateField(float *data)
     {
         for (int x = 0; x < width; x++)
         {
@@ -37,10 +46,12 @@ public:
                 data[(x * height) + y] = perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
             }
         }
+
+        std::cout << data[0] << "" << std::endl;
     }
 
 private:
     siv::PerlinNoise perlin;
-    static constexpr uint8_t field_intensitiy = 5;
-    static constexpr uint8_t octaves = 3;
+    int field_intensitiy;
+    int octaves;
 };

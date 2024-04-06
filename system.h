@@ -1,9 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "particle.h"
-#include "noise.h"
 
-#define PARTICLE_CAP 3400
+#define PARTICLE_CAP 5200
 
 class ParticleSystem
 {
@@ -12,7 +11,7 @@ public:
     uint8_t standard_radius;
 
     ParticleSystem(const uint_fast32_t &seed_)
-        : m_grid{seed_}, m_seed{seed_}
+        : m_seed{seed_}
     {
     }
 
@@ -29,7 +28,7 @@ public:
 
     void update()
     {
-        m_time += .001; // I think I could convert this to just an INT that represents the number of frames
+        m_time += .001;
 
         applyGrid(m_time);
 
@@ -55,6 +54,11 @@ public:
         applyBoundsSemiRand(respawn_distance);
     }
 
+    void setField(float *field)
+    {
+        m_grid = field;
+    }
+
     void setStandardRadius(const uint8_t &radius)
     {
         standard_radius = radius;
@@ -65,9 +69,16 @@ public:
     //     m_frame_dt = 1.0f / static_cast<float>(rate);
     // }
 
-    void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
+    // void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
+    // {
+    //     m_grid.setSize(width + 2, height + 2); // add buffers on each side
+    //     m_cell_size = cell_size;
+    // }
+
+    void setFieldDimensions(uint16_t height, uint16_t width, uint16_t cell_size)
     {
-        m_grid.setSize(width + 2, height + 2); // add buffers on each side
+        gridHeight = height;
+        gridWidth = width;
         m_cell_size = cell_size;
     }
 
@@ -86,10 +97,10 @@ public:
         particle.setVelocity(v);
     }
 
-    void generateField()
-    {
-        m_grid.generateField();
-    }
+    // void generateField(float *data)
+    // {
+    //     m_grid.generateField(data);
+    // }
 
     [[nodiscard]] const std::array<Particle, PARTICLE_CAP> &getParticles() const
     {
@@ -117,7 +128,10 @@ private:
     float m_time = 0.0f;
     // static constexpr uint8_t m_frame_dt = 1;
 
-    PerlinField m_grid;
+    // PerlinField m_grid;
+    float *m_grid;
+    uint16_t gridHeight;
+    uint16_t gridWidth;
     uint16_t m_cell_size;
     const uint_fast32_t &m_seed;
 
@@ -221,10 +235,10 @@ private:
 
                 // get position of cell that particle is in
                 // the "+1"s are for the buffers of the grid
-                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * m_grid.width + 1;
+                uint32_t cell_position = floor(particle.position.x / m_cell_size) + floor(particle.position.y / m_cell_size + 1) * gridWidth + 1;
 
-                float x = cos(m_grid.data[cell_position] + t);
-                float y = sin(m_grid.data[cell_position] + t);
+                float x = cos(m_grid[cell_position] + t);
+                float y = sin(m_grid[cell_position] + t);
 
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
@@ -232,7 +246,10 @@ private:
                 particle.addVelocity(vec * (float)speed_coefficent);
                 particle.slowDown(slow_ratio);
 
-                // can use particle.setVelocity aswell
+                // can use particle.setVelocity here as well
+
+                // std::cout << "m_grid @ " << cell_position << '=' << m_grid[cell_position] << std::endl;
+                // std::cout << "m_grid @ (" << particle.position.x << ", " << particle.position.y << ") =" << m_grid[cell_position] << std::endl;
             }
         }
     }
