@@ -25,14 +25,14 @@ public:
     void update()
     {
         // Compute how much particle moved
-        const sf::Vector2f displacement = position - position_last;
+        const sf::Vector2f displacement = position - position_last; // ~22%
         // Update pos
 
         position_last = position;
         position = position + displacement + acceleration;
 
         // Reset acceleration
-        acceleration = {};
+        acceleration = {}; // ~8%
     }
 
     void updateHistory()

@@ -43,7 +43,7 @@ public:
         {
             for (int y = 0; y < height; y++)
             {
-                data[(x * height) + y] = perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
+                data[(x * height) + y] = coefficent * perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
             }
         }
 

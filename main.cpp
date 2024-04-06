@@ -7,7 +7,7 @@
 
 int main()
 {
-    Simulation sim(124124124); // Enter seed up to 4,294,967,296 - 10
+    Simulation sim(423234); // Enter seed up to 4,294,967,296 - 10
     sim.run();
     return 0;
 }

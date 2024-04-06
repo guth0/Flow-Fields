@@ -142,6 +142,8 @@ private:
 
     inline void updateParticles() // very small function might be good for inline
     {
+        const float dt2 = dt * dt;
+
         for (Particle &particle : m_particles)
         {
             particle.update();
@@ -173,6 +175,8 @@ private:
 
     void applyBoundsRand()
     {
+        srand(m_seed + (static_cast<int>(m_time * 100)) % 10); // add time for more randomness between frames
+
         for (Particle &particle : m_particles)
         {
             if (particle.position.x < standard_radius)
@@ -226,11 +230,12 @@ private:
 
     void applyGrid(const float &t)
     {
+
         for (Particle &particle : m_particles)
         {
 
-            if (!(particle.position.x <= 0 || particle.position.x >= m_world_size.x ||
-                  particle.position.y <= 0 || particle.position.y >= m_world_size.y)) // Negatives are faster than positives
+            if (particle.position.x > 0 && particle.position.x < m_world_size.x &&
+                particle.position.y > 0 && particle.position.y < m_world_size.y)
             {
 
                 // get position of cell that particle is in
@@ -240,6 +245,7 @@ private:
                 float x = cos(m_grid[cell_position] + t);
                 float y = sin(m_grid[cell_position] + t);
 
+                // ~6% of runtime
                 sf::Vector2f vec = sf::Vector2f(x, y);
                 // apply that cell's vector to the particle
 
@@ -262,3 +268,5 @@ private:
         }
     }
 };
+
+// 308 - 104 - (200 / 4) - 15
