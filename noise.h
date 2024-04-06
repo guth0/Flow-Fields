@@ -5,19 +5,10 @@
 class PerlinField
 {
 public:
-    // float *data;
-    uint16_t width;
-    uint16_t height;
-
     PerlinField(const uint_fast32_t &seed_)
     {
         perlin = siv::PerlinNoise{seed_};
     }
-
-    // ~PerlinField() // destructor, don't explicitily call, it will delete itself
-    // {
-    //     delete[] data;
-    // }
 
     void setIntensity(int i)
     {
@@ -52,4 +43,6 @@ private:
     siv::PerlinNoise perlin;
     int field_intensitiy;
     int octaves;
+    uint16_t width;
+    uint16_t height;
 };

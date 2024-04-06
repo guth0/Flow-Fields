@@ -64,17 +64,6 @@ public:
         standard_radius = radius;
     }
 
-    // void setSimulationUpdateRate(const uint32_t &rate)
-    // {
-    //     m_frame_dt = 1.0f / static_cast<float>(rate);
-    // }
-
-    // void resizeGrid(const uint16_t &height, const uint16_t &width, const uint16_t &cell_size)
-    // {
-    //     m_grid.setSize(width + 2, height + 2); // add buffers on each side
-    //     m_cell_size = cell_size;
-    // }
-
     void setFieldDimensions(uint16_t height, uint16_t width, uint16_t cell_size)
     {
         gridHeight = height;
@@ -96,11 +85,6 @@ public:
     {
         particle.setVelocity(v);
     }
-
-    // void generateField(float *data)
-    // {
-    //     m_grid.generateField(data);
-    // }
 
     [[nodiscard]] const std::array<Particle, PARTICLE_CAP> &getParticles() const
     {
@@ -126,9 +110,7 @@ private:
     static constexpr float slow_ratio = 0.1f; // slow down ratio%
 
     float m_time = 0.0f;
-    // static constexpr uint8_t m_frame_dt = 1;
 
-    // PerlinField m_grid;
     float *m_grid;
     uint16_t gridHeight;
     uint16_t gridWidth;
@@ -247,9 +229,6 @@ private:
                 particle.slowDown(slow_ratio);
 
                 // can use particle.setVelocity here as well
-
-                // std::cout << "m_grid @ " << cell_position << '=' << m_grid[cell_position] << std::endl;
-                // std::cout << "m_grid @ (" << particle.position.x << ", " << particle.position.y << ") =" << m_grid[cell_position] << std::endl;
             }
         }
     }
