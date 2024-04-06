@@ -13,34 +13,9 @@ public:
     void render(std::array<Particle, PARTICLE_CAP> &particles) const
     {
 
-        //\\// Render objects //\\//
-        // sf::CircleShape circle{1.0f};
-        // circle.setPointCount(32);
-        // circle.setOrigin(1.0f, 1.0f);
-        // const std::vector<Particle> &particles = system.getParticles();
-        //\\// Render objects //\\//
-
-        // sf::VertexArray liney(sf::LineStrip, 4); // Two points for a line
-
-        // // Set the position and color of the points
-        // liney[0].position = sf::Vector2f(100.f, 100.f);
-        // liney[1].position = sf::Vector2f(200.f, 200.f);
-        // liney[2].position = sf::Vector2f(350.f, 300.f);
-        // liney[3].position = sf::Vector2f(400.f, 400.f);
-
-        // m_target.draw(liney);
-
         for (const Particle &particle : particles)
         {
-            //\\// Render Point //\\//
-            // circle.setPosition(particle.position);
-            // circle.setScale(system.standard_radius, system.standard_radius);
-            // circle.setFillColor(particle.color);
-            // m_target.draw(circle);
-            //\\// Render Point //\\//
-
             //\\// Render Tail //\\//
-            // const std::deque<sf::Vertex> *const history = &particle.history;
             uint8_t history_size = particle.history.size();
             uint8_t offset = 0;
 
