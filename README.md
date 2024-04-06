@@ -13,6 +13,6 @@ I am currently in the process of centralizing all of the settings but, as of now
 
 ## Example
 ---
-[Couldn't load video ;(](https://github.com/guth0/Flow-Fields/blob/optimization/Demos/Flow_Field_Demo.mov)
+[Couldn't load video ;(](https://github.com/guth0/Flow-Fields/blob/optimization/Demos/Flow_Field_Demo.gif)
 
 
