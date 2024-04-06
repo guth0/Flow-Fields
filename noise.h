@@ -46,8 +46,6 @@ public:
                 data[(x * height) + y] = perlin.octave2D_01((x * field_intensitiy), (y * field_intensitiy), octaves);
             }
         }
-
-        std::cout << data[0] << "" << std::endl;
     }
 
 private:
