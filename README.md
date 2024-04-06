@@ -11,8 +11,6 @@ This is a simulation of flow fields. It uses [Perlin Noise](https://en.wikipedia
 
 I am currently in the process of centralizing all of the settings but, as of now, most things can be changed inside of Simulation::Simulation()
 
-## Example
+## Demo
 ---
-[Couldn't load video ;(](https://github.com/guth0/Flow-Fields/blob/optimization/Demos/Flow_Field_Demo.gif)
-
-
+[Click Me](https://github.com/guth0/Flow-Fields/blob/optimization/Demos/Flow_Field_Demo.gif)
