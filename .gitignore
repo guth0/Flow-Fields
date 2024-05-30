@@ -113,3 +113,4 @@ Temporary Items
 ###CUSTOM###
 .vscode/
 .cmake
+.build/
