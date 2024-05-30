@@ -183,24 +183,21 @@ private:
 
         for (Particle &particle : m_particles)
         {
+            offset = (rand() % (2 * dist)) - dist;
             if (particle.position.x < standard_radius)
             {
-                offset = (rand() % (2 * dist)) - dist;
                 particle.setPosition(m_world_size.x - standard_radius, particle.position.y + offset);
             }
             else if (particle.position.x > m_world_size.x)
             {
-                offset = (rand() % (2 * dist)) - dist;
                 particle.setPosition(standard_radius, particle.position.y + offset);
             }
             else if (particle.position.y < standard_radius)
             {
-                offset = (rand() % (2 * dist)) - dist;
                 particle.setPosition(particle.position.x + offset, m_world_size.y - standard_radius);
             }
             else if (particle.position.y > m_world_size.y)
             {
-                offset = (rand() % (2 * dist)) - dist;
                 particle.setPosition(particle.position.x + offset, standard_radius);
             }
         }
